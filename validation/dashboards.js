@@ -1,38 +1,42 @@
 var fs = require('fs');
 
+var Logger = require('../util/logger');
+var logger = new Logger('  ');
+
 module.exports = {
   validate
 };
 
 function validate(location, dashboard) {
-  console.log('  Dashboard: ' + dashboard);
+  logger.log('Dashboard: ' + dashboard);
 
   try {
+    logger = new Logger('    ');
     var dsb = JSON.parse(fs.readFileSync(location + dashboard, 'utf8'));
 
     var widgetIds = dsb.dashboard.widgets.map(w => w.id).sort();
     var layoutIds = [].concat.apply([], JSON.parse(dsb.dashboard.layout).contents.map(c => c.widgets)).sort();
-    console.log('    Layout IDs match widget IDs: ' + (JSON.stringify(widgetIds) == JSON.stringify(layoutIds) ? '✓' : 'X'));
+    logger.log('Layout IDs match widget IDs: ' + (JSON.stringify(widgetIds) == JSON.stringify(layoutIds) ? '✓' : 'X'));
     if (JSON.stringify(widgetIds) != JSON.stringify(layoutIds)) {
-      console.log('      Widget IDs: ' + JSON.stringify(widgetIds));
-      console.log('      Layout IDs: ' + JSON.stringify(layoutIds));
+      logger.log('      Widget IDs: ' + JSON.stringify(widgetIds));
+      logger.log('      Layout IDs: ' + JSON.stringify(layoutIds));
     }
 
     var contents = dsb.dashboard.properties.gridstackContents;
-    console.log('    Has gridstack: ' + (contents ? '✓' : 'X'));
+    logger.log('Has gridstack: ' + (contents ? '✓' : 'X'));
 
     if (contents) {
       var gridstack = JSON.parse(contents);
-      console.log('    Gridstack content is valid JSON: ✓');
+      logger.log('Gridstack content is valid JSON: ✓');
 
       var gridstackIds = gridstack.map(g => g.id).sort();
-      console.log('    Gridstack layout IDs match widget IDs: ' + (JSON.stringify(widgetIds) == JSON.stringify(gridstackIds) ? '✓' : 'X'));
+      logger.log('Gridstack layout IDs match widget IDs: ' + (JSON.stringify(widgetIds) == JSON.stringify(gridstackIds) ? '✓' : 'X'));
       if (JSON.stringify(widgetIds) != JSON.stringify(gridstackIds)) {
-        console.log('      Widget IDs: ' + JSON.stringify(widgetIds));
-        console.log('      Gridstack IDs: ' + JSON.stringify(gridstackIds));
+        logger.log('      Widget IDs: ' + JSON.stringify(widgetIds));
+        logger.log('      Gridstack IDs: ' + JSON.stringify(gridstackIds));
       }
     }
   } catch(err) {
-    console.log('    Error: ' + err);
+    logger.log('    Error: ' + err);
   }
 }

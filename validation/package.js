@@ -1,9 +1,12 @@
 var fs = require('fs');
 var dashboardValidation = require('./dashboards');
 
+var Logger = require('../util/logger');
+var logger = new Logger('');
+
 module.exports.validate = function(path, package) {
-    console.log('------------------------------');
-    console.log('Package: ' + package);
+    logger.log('------------------------------');
+    logger.log('Package: ' + package);
 
     var hasDashboards = fs.existsSync(path + '/dashboards');
 
@@ -13,6 +16,6 @@ module.exports.validate = function(path, package) {
         dashboardValidation.validate(path + '/dashboards/', dashboard);
       });
     } else {
-      console.log('  No dashboards, moving on');
+      logger.log('No dashboards, moving on');
     }
 };
