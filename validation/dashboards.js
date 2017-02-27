@@ -18,29 +18,17 @@ function validate(location, dashboard) {
 
     var widgetIds = dsb.dashboard.widgets.map(w => w.id).sort();
     var layoutIds = [].concat.apply([], JSON.parse(dsb.dashboard.layout).contents.map(c => c.widgets)).sort();
-    logger.log('Layout IDs match widget IDs: ' + (JSON.stringify(widgetIds) == JSON.stringify(layoutIds) ? '✓' : 'X'));
-    if (JSON.stringify(widgetIds) != JSON.stringify(layoutIds)) {
-      errorTracker.log('Layout contents do not match the widget IDs');
-      logger.log('  Widget IDs: ' + JSON.stringify(widgetIds));
-      logger.log('  Layout IDs: ' + JSON.stringify(layoutIds));
-    }
+    errorTracker.assertEquals(JSON.stringify(layoutIds), JSON.stringify(widgetIds), 'Layout IDs match widget IDs');
 
     var contents = dsb.dashboard.properties.gridstackContents;
-    logger.log('Has gridstack: ' + (contents ? '✓' : 'X'));
+    errorTracker.assertTrue(contents, 'Has gridstack contents');
 
     if (contents) {
       var gridstack = JSON.parse(contents);
-      logger.log('Gridstack content is valid JSON: ✓');
+      errorTracker.assertTrue(true, 'Gridstack content is valid JSON');
 
       var gridstackIds = gridstack.map(g => g.id).sort();
-      logger.log('Gridstack layout IDs match widget IDs: ' + (JSON.stringify(widgetIds) == JSON.stringify(gridstackIds) ? '✓' : 'X'));
-      if (JSON.stringify(widgetIds) != JSON.stringify(gridstackIds)) {
-        errorTracker.log('Gridstack layout contents do not match the widget IDs');
-        logger.log('  Widget IDs: ' + JSON.stringify(widgetIds));
-        logger.log('  Gridstack IDs: ' + JSON.stringify(gridstackIds));
-      }
-    } else {
-      errorTracker.log('No Gridstack contents');
+      errorTracker.assertEquals(JSON.stringify(gridstackIds), JSON.stringify(widgetIds), 'Gridstack layout contents match widget IDs');
     }
   } catch(err) {
     errorTracker.log('Error: ' + err);
