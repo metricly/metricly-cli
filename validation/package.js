@@ -5,12 +5,12 @@ module.exports.validate = function(path, package) {
     console.log('------------------------------');
     console.log('Package: ' + package);
 
-    var hasDashboards = fs.existsSync(path + package + '/dashboards');
+    var hasDashboards = fs.existsSync(path + '/dashboards');
 
     if (hasDashboards) {
-      var dashboards = fs.readdirSync(path + package + '/dashboards/');
+      var dashboards = fs.readdirSync(path + '/dashboards/');
       dashboards.forEach(dashboard => {
-        dashboardValidation.validate(path + package + '/dashboards/', dashboard);
+        dashboardValidation.validate(path + '/dashboards/', dashboard);
       });
     } else {
       console.log('  No dashboards, moving on');
