@@ -8,6 +8,16 @@ packages.forEach(package => {
   console.log('------------------------------');
   console.log('Package: ' + package);
 
+  var hasDashboards = fs.existsSync(root + package + '/dashboards');
+
+  if (hasDashboards) {
+    checkDashboards(package);
+  } else {
+    console.log('  No dashboards, moving on');
+  }
+});
+
+function checkDashboards(package) {
   var dashboards = fs.readdirSync(root + package + '/dashboards/');
   dashboards.forEach(dashboard => {
     console.log('  Dashboard: ' + dashboard);
@@ -38,4 +48,4 @@ packages.forEach(package => {
       console.log('    Error: ' + err);
     }
   });
-});
+}
