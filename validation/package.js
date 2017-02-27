@@ -20,32 +20,34 @@ module.exports.validate = function(path, package, continueOnFinish) {
       var downloadUrl = manifest.manifest.distro.download;
 
       errorTracker.assertEquals(downloadUrl,  packageRepoRoot + package.split('.').join('-') + '/archive/master.zip', 'Package download url is correct');
+
+      var hasDashboards = fs.existsSync(path + '/dashboards');
+
+      if (hasDashboards) {
+        var dashboards = fs.readdirSync(path + '/dashboards/');
+        dashboards.forEach(dashboard => {
+          logger.log('  Dashboard: ' + dashboard);
+          errorTracker.addErrors(dashboardValidation.validate(path + '/dashboards/', dashboard));
+        });
+      } else {
+        logger.log('No dashboards, moving on');
+      }
+
+      var hasPolicies = fs.existsSync(path + '/policies');
+
+      if (hasPolicies) {
+        var policies = fs.readdirSync(path + '/policies/');
+        errorTracker.assertEquals(policies.length, manifest.policies.length, 'Policy files are equal to the number of policies listed in package.json');
+
+        policies.forEach(policy => {
+          logger.log('  Policy: ' + policy);
+          errorTracker.addErrors(policyValidation.validate(manifest.policies, path + '/policies/', policy));
+        });
+      } else {
+        logger.log('No policies, moving on');
+      }
     } catch (err) {
       errorTracker.log('Error: ' + err);
-    }
-
-    var hasDashboards = fs.existsSync(path + '/dashboards');
-
-    if (hasDashboards) {
-      var dashboards = fs.readdirSync(path + '/dashboards/');
-      dashboards.forEach(dashboard => {
-        logger.log('  Dashboard: ' + dashboard);
-        errorTracker.addErrors(dashboardValidation.validate(path + '/dashboards/', dashboard));
-      });
-    } else {
-      logger.log('No dashboards, moving on');
-    }
-
-    var hasPolicies = fs.existsSync(path + '/policies');
-
-    if (hasPolicies) {
-      var policies = fs.readdirSync(path + '/policies/');
-      policies.forEach(policy => {
-        logger.log('  Policy: ' + policy);
-        errorTracker.addErrors(policyValidation.validate(path + '/policies/', policy));
-      });
-    } else {
-      logger.log('No policies, moving on');
     }
 
     errorTracker.exit(continueOnFinish);

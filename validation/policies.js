@@ -10,13 +10,15 @@ module.exports = {
   validate
 };
 
-function validate(location, policy) {
+function validate(policyList, location, policy) {
   var errorTracker = new ErrorTracker(policy, indent);
 
   try {
     var pol = JSON.parse(fs.readFileSync(location + policy, 'utf8'));
 
     errorTracker.assertTrue(true, 'Policy is valid JSON');
+
+    errorTracker.assertTrue(policyList.filter(policyItem => policyItem.data.file === 'policies/' + policy).length === 1, 'Policy found in package.json list');
   } catch(err) {
     errorTracker.log('Error: ' + err);
   }
