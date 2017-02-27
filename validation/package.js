@@ -2,6 +2,7 @@ var fs = require('fs');
 var ErrorTracker = require('../util/errorTracker');
 var dashboardValidation = require('./dashboards');
 var policyValidation = require('./policies');
+var analyticValidation = require('./analytics');
 
 var indent = '';
 
@@ -45,6 +46,20 @@ module.exports.validate = function(path, package, continueOnFinish) {
         });
       } else {
         logger.log('No policies, moving on');
+      }
+
+      var hasAnalytics = fs.existsSync(path + '/analyticConfigurations');
+
+      if (hasAnalytics) {
+        var analytics = fs.readdirSync(path + '/analyticConfigurations/');
+        errorTracker.assertEquals(analytics.length, manifest.analyticConfigurations.length, 'Analytic files are equal to the number of analytics listed in package.json');
+
+        analytics.forEach(analytic => {
+          logger.log('  Analytic: ' + analytic);
+          errorTracker.addErrors(analyticValidation.validate(manifest.analyticConfigurations, path + '/analyticConfigurations/', analytic));
+        });
+      } else {
+        logger.log('No analytics, moving on');
       }
     } catch (err) {
       errorTracker.log('Error: ' + err);
