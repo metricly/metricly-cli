@@ -1,6 +1,7 @@
 var fs = require('fs');
 var ErrorTracker = require('../util/errorTracker');
 var dashboardValidation = require('./dashboards');
+var policyValidation = require('./policies');
 
 var indent = '';
 
@@ -33,6 +34,18 @@ module.exports.validate = function(path, package, continueOnFinish) {
       });
     } else {
       logger.log('No dashboards, moving on');
+    }
+
+    var hasPolicies = fs.existsSync(path + '/policies');
+
+    if (hasPolicies) {
+      var policies = fs.readdirSync(path + '/policies/');
+      policies.forEach(policy => {
+        logger.log('  Policy: ' + policy);
+        errorTracker.addErrors(policyValidation.validate(path + '/policies/', policy));
+      });
+    } else {
+      logger.log('No policies, moving on');
     }
 
     errorTracker.exit(continueOnFinish);
