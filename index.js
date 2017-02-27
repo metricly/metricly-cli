@@ -1,17 +1,19 @@
 var fs = require('fs');
 
-const packages = fs.readdirSync('../').filter(f => fs.statSync('../' + f).isDirectory() && f.startsWith('netuitive-packages-'));
+var root = (process.argv.length === 3 ? process.argv[2] : '..') + '/';
+
+const packages = fs.readdirSync(root).filter(f => fs.statSync(root + f).isDirectory() && f.startsWith('netuitive-packages-'));
 
 packages.forEach(package => {
   console.log('------------------------------');
   console.log('Package: ' + package);
 
-  var dashboards = fs.readdirSync('../' + package + '/dashboards/');
+  var dashboards = fs.readdirSync(root + package + '/dashboards/');
   dashboards.forEach(dashboard => {
     console.log('  Dashboard: ' + dashboard);
 
     try {
-      var dsb = JSON.parse(fs.readFileSync('../' + package + '/dashboards/' + dashboard, 'utf8'));
+      var dsb = JSON.parse(fs.readFileSync(root + package + '/dashboards/' + dashboard, 'utf8'));
       var contents = dsb.dashboard.properties.gridstackContents;
       console.log('    Has gridstack: ' + (contents ? '✓' : 'X'));
 
