@@ -21,7 +21,9 @@ ErrorTracker.prototype.getErrors = function() {
 };
 
 ErrorTracker.prototype.exit = function(continueOnFinish) {
-  if (this.errors.length !== 0) {
+  if (this.errors.length === 0) {
+    this.logger.log('Success! No errors ✓');
+  } else {
     this.logger.log('Errors:');
     this.errors.forEach(error => console.log(error));
   }
