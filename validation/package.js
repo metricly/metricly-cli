@@ -12,7 +12,6 @@ var packageRepoRoot = 'https://github.com/netuitive-community-packages/';
 module.exports.validate = function(path, package, continueOnFinish) {
     var errorTracker = new ErrorTracker(package, indent);
 
-    logger.log('------------------------------');
     logger.log('Package: ' + package);
 
     try {
