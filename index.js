@@ -30,7 +30,7 @@ packages.forEach(package => {
 
       var gridstackIds = gridstack.map(g => g.id).sort();
       console.log('    Gridstack layout IDs match widget IDs: ' + (JSON.stringify(widgetIds) == JSON.stringify(gridstackIds) ? '✓' : 'X'));
-      if (JSON.stringify(widgetIds) != JSON.stringify(layoutIds)) {
+      if (JSON.stringify(widgetIds) != JSON.stringify(gridstackIds)) {
         console.log('      Widget IDs: ' + JSON.stringify(widgetIds));
         console.log('      Gridstack IDs: ' + JSON.stringify(gridstackIds));
       }
