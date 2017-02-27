@@ -1,5 +1,5 @@
 {
-  "name": "package-parser",
+  "name": "package-validator",
   "version": "0.1.0",
   "description": "",
   "main": "./validation/package.js",
