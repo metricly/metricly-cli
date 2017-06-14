@@ -7,7 +7,4 @@ Small script for parsing and validating packages.
 To run the report run `node index.js <package-directory>`.
 
 ## Single Use
-To run inside a single package repository use the following line:
-```
-npm i git+https://git@github.com/Netuitive/netuitive-package-validator.git && node -e "require('package-validator').validate('.', require('./package.json').id)"
-```
+**Package Validator** can be installed globally with `npm install -g git+https://git@github.com/Netuitive/netuitive-package-validator.git`. Validate a package in the current directory with `validate-package` or run `validate-package --help` for additional options.

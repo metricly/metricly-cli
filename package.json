@@ -1,11 +1,14 @@
 {
   "name": "package-validator",
   "version": "0.1.0",
-  "description": "",
+  "description": "Netuitive package validator",
   "main": "./validation/package.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "bin": {
+    "validate-package": "bin/validate-package.js"
   },
   "author": "TheConnMan",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "caporal": "^0.6.0"
+  }
 }
