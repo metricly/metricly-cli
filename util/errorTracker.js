@@ -36,6 +36,7 @@ ErrorTracker.prototype.getErrors = function() {
 };
 
 ErrorTracker.prototype.exit = function(continueOnFinish) {
+  this.logger.log('');
   if (this.errors.length === 0) {
     this.logger.log('Success! No errors ✓');
   } else {
