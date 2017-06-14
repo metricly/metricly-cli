@@ -18,6 +18,8 @@ function validate(policyList, location, policy) {
 
     errorTracker.assertTrue(true, 'Policy is valid JSON');
 
+    errorTracker.assertTrue((pol.policy.scope.elementType && typeof pol.policy.scope.elementType === 'string') || (pol.policy.scope.elementTypes && Array.isArray(pol.policy.scope.elementTypes)), 'Policy has a valid elementType(s)');
+
     errorTracker.assertTrue(policyList.filter(policyItem => policyItem.data.file === 'policies/' + policy).length === 1, 'Policy found in package.json list');
   } catch(err) {
     errorTracker.log('Error: ' + err);
