@@ -1,10 +1,9 @@
 {
-  "name": "package-validator",
+  "name": "netuitive-package-cli",
   "version": "0.1.2",
-  "description": "Netuitive package validator",
-  "main": "./validation/package.js",
+  "description": "Netuitive Package Interface",
   "bin": {
-    "validate-package": "bin/validate-package.js"
+    "netuitive-package": "bin/netuitive-package.js"
   },
   "author": "TheConnMan",
   "license": "ISC",

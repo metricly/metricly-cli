@@ -2,12 +2,15 @@
 
 var path = require('path');
 var pkg = require('../package.json');
+
 var validator = require('../validation/package');
 
 var prog = require('caporal');
 prog
   .version(pkg.version)
-  .description(pkg.description)
+  .description(pkg.description);
+
+prog.command('validate')
   .option('--location <location>', 'Path to package', /.*/, '.')
   .action(function(args, options, logger) {
     var location = path.resolve(process.cwd(), options.location);
