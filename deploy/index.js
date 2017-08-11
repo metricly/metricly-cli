@@ -1,9 +1,9 @@
 var zipFolder = new require('zip-folder');
 
-module.exports = function(location) {
-  console.log('\nDeploying package');
+module.exports = function(config, logger, location) {
+  logger.info('\nDeploying package');
   return createZip(location).then((zip) => {
-    console.log('\nDone deploying');
+    logger.info('\nDone deploying');
   });
 };
 
