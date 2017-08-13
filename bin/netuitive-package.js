@@ -8,7 +8,6 @@ var pkg = require('../package.json');
 
 var validator = require('../validation/package');
 var packageService = require('../packageService/index');
-var deploy = require('../deploy/index');
 
 var prog = require('caporal');
 prog
@@ -54,7 +53,7 @@ prog.command('deploy', 'Deploy a local package to a tenant')
   .action(function(args, options, logger) {
     var location = path.resolve(process.cwd(), options.location);
     validator.validate(location, require(location + '/package.json').id, true);
-    deploy(mergeConfig(options), logger, location).catch(e => {
+    packageService.deploy(mergeConfig(options), logger, location).catch(e => {
       logger.error('Error deploying package', e);
     });
   });
