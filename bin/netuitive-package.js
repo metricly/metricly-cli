@@ -7,6 +7,7 @@ var extend = require('extend');
 var pkg = require('../package.json');
 
 var validator = require('../validation/package');
+var packageService = require('../packageService/index');
 var deploy = require('../deploy/index');
 
 var prog = require('caporal');
@@ -38,6 +39,12 @@ prog.command('validate', 'Validate a local package')
   .action(function(args, options, logger) {
     var location = path.resolve(process.cwd(), options.location);
     validator.validate(location, require(location + '/package.json').id);
+  });
+
+prog.command('list', 'List installed packages')
+  .action(function(args, options, logger) {
+    var config = mergeConfig(options);
+    packageService.listInstalled(config, logger);
   });
 
 prog.command('deploy', 'Deploy a local package to a tenant')
