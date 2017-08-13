@@ -35,9 +35,25 @@ module.exports = {
         return pkg.name + ':' + pkg.version + ' (ID: ' + pkg.packageId + ')';
       }));
     });
+  },
+
+  listUpdatable: function(config, logger) {
+    logger.debug('\nListing installed packages');
+    return request({
+      uri: config.endpoint + '/packages/updates',
+      qs: {
+        tenantId: config.tenantId
+      }
+    }).then(body => {
+      logger.info('The following packages can be upgraded:');
+      logger.info(JSON.parse(body)[0].updates.sort((pkg1, pkg2) => {
+        return pkg1.packageId.localeCompare(pkg2.packageId);
+      }).map(pkg => {
+        return pkg.packageId + ': ' + pkg.version.current + ' -> ' + pkg.version.available;
+      }));
+    });
   }
 };
-
 
 function createZip(location) {
   var zip = './package.zip';

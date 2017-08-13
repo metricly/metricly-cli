@@ -46,6 +46,12 @@ prog.command('list', 'List installed packages')
     packageService.listInstalled(config, logger);
   });
 
+prog.command('updatable', 'List updatable packages')
+  .action(function(args, options, logger) {
+    var config = mergeConfig(options);
+    packageService.listUpdatable(config, logger);
+  });
+
 prog.command('deploy', 'Deploy a local package to a tenant')
   .option('--location <location>', 'Path to package', /.*/, '.')
   .option('--endpoint <endpoint>', 'Package endpoint (overrides config)', /.*/)
