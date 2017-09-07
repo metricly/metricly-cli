@@ -9,6 +9,7 @@
   "author": "TheConnMan",
   "license": "ISC",
   "dependencies": {
-    "caporal": "^0.6.0"
+    "caporal": "^0.6.0",
+    "json-dup-key-validator": "^1.0.2"
   }
 }
