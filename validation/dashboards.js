@@ -1,4 +1,6 @@
 var fs = require('fs');
+var jsonValidator = require('json-dup-key-validator');
+
 var ErrorTracker = require('../util/errorTracker');
 
 var indent = '    ';
@@ -14,7 +16,12 @@ function validate(location, dashboard) {
   var errorTracker = new ErrorTracker(dashboard, indent);
 
   try {
-    var dsb = JSON.parse(fs.readFileSync(location + dashboard, 'utf8'));
+    var json = fs.readFileSync(location + dashboard, 'utf8');
+    var jsonParseError = jsonValidator.validate(json, false);
+
+    errorTracker.assertTrue(!jsonParseError, 'No duplicate object keys');
+
+    var dsb = JSON.parse(json);
 
     var widgetIds = dsb.dashboard.widgets.map(w => w.id).sort();
 

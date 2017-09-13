@@ -1,4 +1,6 @@
 var fs = require('fs');
+var jsonValidator = require('json-dup-key-validator');
+
 var ErrorTracker = require('../util/errorTracker');
 
 var indent = '    ';
@@ -14,7 +16,12 @@ function validate(policyList, location, policy) {
   var errorTracker = new ErrorTracker(policy, indent);
 
   try {
-    var pol = JSON.parse(fs.readFileSync(location + policy, 'utf8'));
+    var json = fs.readFileSync(location + policy, 'utf8');
+    var jsonParseError = jsonValidator.validate(json, false);
+
+    errorTracker.assertTrue(!jsonParseError, 'No duplicate object keys');
+
+    var pol = JSON.parse(json);
 
     errorTracker.assertTrue(true, 'Policy is valid JSON');
 
