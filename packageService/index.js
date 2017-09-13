@@ -32,5 +32,18 @@ module.exports = {
       var pkg = JSON.parse(body).package;
       logger.info(JSON.stringify(pkg, null, 2));
     });
+  },
+
+  uninstallById: function(id, config, logger) {
+    logger.debug('\nUninstalling package ' + id);
+    return request.delete({
+      uri: config.endpoint + '/packages/' + id,
+      auth: {
+        user: config.username,
+        pass: config.password
+      }
+    }).then(body => {
+      logger.info('Successfully uninstalled package ' + id);
+    });
   }
 };
