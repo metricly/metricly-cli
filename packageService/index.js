@@ -34,6 +34,25 @@ module.exports = {
     });
   },
 
+  installFromUrl: function(url, config, logger) {
+    logger.debug('\nInstalling package from ' + url);
+    return request.post({
+      uri: config.endpoint + '/packages/',
+      auth: {
+        user: config.username,
+        pass: config.password
+      },
+      json: {
+        archives: [url]
+      },
+      qs: {
+        userEmail: config.username
+      }
+    }).then(body => {
+      logger.info('Successfully installed package, ID: ' + body.packages[0].id);
+    });
+  },
+
   uninstallById: function(id, config, logger) {
     logger.debug('\nUninstalling package ' + id);
     return request.delete({
