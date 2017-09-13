@@ -17,6 +17,8 @@ module.exports = {
       }).map(pkg => {
         return pkg.name + ':v' + pkg.version + ' (ID: ' + pkg.id + ')';
       }));
+    }).catch(e => {
+      logger.error('There was an error listing the packages');
     });
   },
 
@@ -31,6 +33,8 @@ module.exports = {
     }).then(body => {
       var pkg = JSON.parse(body).package;
       logger.info(JSON.stringify(pkg, null, 2));
+    }).catch(e => {
+      logger.error('There was an error getting the package');
     });
   },
 
@@ -50,6 +54,8 @@ module.exports = {
       }
     }).then(body => {
       logger.info('Successfully installed package, ID: ' + body.packages[0].id);
+    }).catch(e => {
+      logger.error('There was an error installing the package');
     });
   },
 
@@ -63,6 +69,8 @@ module.exports = {
       }
     }).then(body => {
       logger.info('Successfully uninstalled package ' + id);
+    }).catch(e => {
+      logger.error('There was an error uninstalling the package');
     });
   }
 };
