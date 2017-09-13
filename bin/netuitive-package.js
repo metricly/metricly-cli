@@ -53,6 +53,15 @@ prog.command('list', 'List installed packages')
     packageService.listInstalled(config, logger);
   });
 
+prog.command('get', 'Get a package by ID')
+  .option('--username', 'Metricly Username')
+  .option('--password', 'Metricly Password')
+  .argument('<id>', 'Package Installation ID')
+  .action(function(args, options, logger) {
+    var config = mergeConfig(options);
+    packageService.getById(args.id, config, logger);
+  });
+
 prog.parse(process.argv);
 
 function mergeConfig(options) {

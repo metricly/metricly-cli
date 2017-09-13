@@ -18,5 +18,19 @@ module.exports = {
         return pkg.name + ':v' + pkg.version + ' (ID: ' + pkg.id + ')';
       }));
     });
+  },
+
+  getById: function(id, config, logger) {
+    logger.debug('\nGetting package ' + id);
+    return request({
+      uri: config.endpoint + '/packages/' + id,
+      auth: {
+        user: config.username,
+        pass: config.password
+      }
+    }).then(body => {
+      var pkg = JSON.parse(body).package;
+      logger.info(JSON.stringify(pkg, null, 2));
+    });
   }
 };
