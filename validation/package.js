@@ -1,4 +1,6 @@
 var fs = require('fs');
+var jsonValidator = require('json-dup-key-validator');
+
 var ErrorTracker = require('../util/errorTracker');
 var dashboardValidation = require('./dashboards');
 var policyValidation = require('./policies');
@@ -17,7 +19,12 @@ module.exports.validate = function(path, package, continueOnFinish) {
     logger.log('Package: ' + package);
 
     try {
-      var manifest = JSON.parse(fs.readFileSync(path + '/package.json', 'utf8'));
+      var json = fs.readFileSync(path + '/package.json', 'utf8');
+      var jsonParseError = jsonValidator.validate(json, false);
+
+      errorTracker.assertTrue(!jsonParseError, 'No duplicate object keys');
+
+      var manifest = JSON.parse(json);
       var downloadUrl = manifest.manifest.distro.download;
 
       errorTracker.assertEquals(downloadUrl,  packageRepoRoot + package.split('.').join('-') + '/archive/master.zip', 'Package download url is correct');
