@@ -29,12 +29,21 @@ module.exports.validate = function(path, package, continueOnFinish) {
 
       errorTracker.assertEquals(downloadUrl,  packageRepoRoot + package.split('.').join('-') + '/archive/master.zip', 'Package download url is correct');
 
+      var dashboardFiles = manifest.dashboards;
+      if (dashboardFiles) {
+        logger.log('  Dashboard files');
+        dashboardFiles.forEach(dsb => {
+          errorTracker.assertTrue(fs.existsSync(path + '/' + dsb.data.file), '    Dashboard file ' + dsb.data.file + ' exists');
+        });
+      }
+
       var hasDashboards = fs.existsSync(path + '/dashboards');
 
       if (hasDashboards) {
         var dashboards = fs.readdirSync(path + '/dashboards/');
         dashboards.forEach(dashboard => {
           logger.log('  Dashboard: ' + dashboard);
+          errorTracker.assertTrue(dashboardFiles.filter(dsb => dsb.data.file === 'dashboards/' + dashboard).length === 1, '    Dashboard file ' + dashboard + ' exists in the manifest');
           errorTracker.addErrors(dashboardValidation.validate(path + '/dashboards/', dashboard));
         });
       } else {
