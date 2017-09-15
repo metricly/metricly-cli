@@ -50,14 +50,21 @@ module.exports.validate = function(path, package, continueOnFinish) {
         logger.log('No dashboards, moving on');
       }
 
+      var policyFiles = manifest.policies;
+      if (policyFiles) {
+        logger.log('  Policy files');
+        policyFiles.forEach(pol => {
+          errorTracker.assertTrue(fs.existsSync(path + '/' + pol.data.file), '    Policy file ' + pol.data.file + ' exists');
+        });
+      }
+
       var hasPolicies = fs.existsSync(path + '/policies');
 
       if (hasPolicies) {
         var policies = fs.readdirSync(path + '/policies/');
-        errorTracker.assertEquals(policies.length, manifest.policies.length, 'Policy files are equal to the number of policies listed in package.json');
-
         policies.forEach(policy => {
           logger.log('  Policy: ' + policy);
+          errorTracker.assertTrue(policyFiles.filter(pol => pol.data.file === 'policies/' + policy).length === 1, '    Policy file ' + policy + ' exists in the manifest');
           errorTracker.addErrors(policyValidation.validate(manifest.policies, path + '/policies/', policy));
         });
       } else {
