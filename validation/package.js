@@ -71,14 +71,21 @@ module.exports.validate = function(path, package, continueOnFinish) {
         logger.log('No policies, moving on');
       }
 
+      var analyticFiles = manifest.analyticConfigurations;
+      if (analyticFiles) {
+        logger.log('  Analytic configuration files');
+        analyticFiles.forEach(acs => {
+          errorTracker.assertTrue(fs.existsSync(path + '/' + acs.data.file), '    Analytic configuration file ' + acs.data.file + ' exists');
+        });
+      }
+
       var hasAnalytics = fs.existsSync(path + '/analyticConfigurations');
 
       if (hasAnalytics) {
         var analytics = fs.readdirSync(path + '/analyticConfigurations/');
-        errorTracker.assertEquals(analytics.length, manifest.analyticConfigurations.length, 'Analytic files are equal to the number of analytics listed in package.json');
-
         analytics.forEach(analytic => {
           logger.log('  Analytic: ' + analytic);
+          errorTracker.assertTrue(analyticFiles.filter(acs => acs.data.file === 'analyticConfigurations/' + analytic).length === 1, '    Analytic configuration file ' + analytic + ' exists in the manifest');
           errorTracker.addErrors(analyticValidation.validate(manifest.analyticConfigurations, path + '/analyticConfigurations/', analytic));
         });
       } else {
