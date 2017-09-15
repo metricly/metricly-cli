@@ -29,40 +29,63 @@ module.exports.validate = function(path, package, continueOnFinish) {
 
       errorTracker.assertEquals(downloadUrl,  packageRepoRoot + package.split('.').join('-') + '/archive/master.zip', 'Package download url is correct');
 
+      var dashboardFiles = manifest.dashboards;
+      if (dashboardFiles) {
+        logger.log('  Dashboard files');
+        dashboardFiles.forEach(dsb => {
+          errorTracker.assertTrue(fs.existsSync(path + '/' + dsb.data.file), '    Dashboard file ' + dsb.data.file + ' exists');
+        });
+      }
+
       var hasDashboards = fs.existsSync(path + '/dashboards');
 
       if (hasDashboards) {
         var dashboards = fs.readdirSync(path + '/dashboards/');
         dashboards.forEach(dashboard => {
           logger.log('  Dashboard: ' + dashboard);
+          errorTracker.assertTrue(dashboardFiles.filter(dsb => dsb.data.file === 'dashboards/' + dashboard).length === 1, '    Dashboard file ' + dashboard + ' exists in the manifest');
           errorTracker.addErrors(dashboardValidation.validate(path + '/dashboards/', dashboard));
         });
       } else {
         logger.log('No dashboards, moving on');
       }
 
+      var policyFiles = manifest.policies;
+      if (policyFiles) {
+        logger.log('  Policy files');
+        policyFiles.forEach(pol => {
+          errorTracker.assertTrue(fs.existsSync(path + '/' + pol.data.file), '    Policy file ' + pol.data.file + ' exists');
+        });
+      }
+
       var hasPolicies = fs.existsSync(path + '/policies');
 
       if (hasPolicies) {
         var policies = fs.readdirSync(path + '/policies/');
-        errorTracker.assertEquals(policies.length, manifest.policies.length, 'Policy files are equal to the number of policies listed in package.json');
-
         policies.forEach(policy => {
           logger.log('  Policy: ' + policy);
+          errorTracker.assertTrue(policyFiles.filter(pol => pol.data.file === 'policies/' + policy).length === 1, '    Policy file ' + policy + ' exists in the manifest');
           errorTracker.addErrors(policyValidation.validate(manifest.policies, path + '/policies/', policy));
         });
       } else {
         logger.log('No policies, moving on');
       }
 
+      var analyticFiles = manifest.analyticConfigurations;
+      if (analyticFiles) {
+        logger.log('  Analytic configuration files');
+        analyticFiles.forEach(acs => {
+          errorTracker.assertTrue(fs.existsSync(path + '/' + acs.data.file), '    Analytic configuration file ' + acs.data.file + ' exists');
+        });
+      }
+
       var hasAnalytics = fs.existsSync(path + '/analyticConfigurations');
 
       if (hasAnalytics) {
         var analytics = fs.readdirSync(path + '/analyticConfigurations/');
-        errorTracker.assertEquals(analytics.length, manifest.analyticConfigurations.length, 'Analytic files are equal to the number of analytics listed in package.json');
-
         analytics.forEach(analytic => {
           logger.log('  Analytic: ' + analytic);
+          errorTracker.assertTrue(analyticFiles.filter(acs => acs.data.file === 'analyticConfigurations/' + analytic).length === 1, '    Analytic configuration file ' + analytic + ' exists in the manifest');
           errorTracker.addErrors(analyticValidation.validate(manifest.analyticConfigurations, path + '/analyticConfigurations/', analytic));
         });
       } else {
