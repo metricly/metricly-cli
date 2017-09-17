@@ -37,19 +37,19 @@ prog.command('config', 'Set local defaults')
       message: 'Metricly Endpoint',
       default: config.endpoint || 'https://app.netuitive.com'
     }]).then(answers => {
-      var location = process.env.HOME + '/.netuitive-package-cli.json';
+      var location = process.env.HOME + '/.metricly-cli.json';
       fs.writeFileSync(location, JSON.stringify(answers, null, 2));
     });
   });
 
-prog.command('validate', 'Validate a local package')
+prog.command('package validate', 'Validate a local package')
   .option('--location <location>', 'Path to package', /.*/, '.')
   .action(function(args, options, logger) {
     var location: string = path.resolve(process.cwd(), options.location);
     packageValidator.validate(location, require(location + '/package.json').id);
   });
 
-prog.command('list', 'List installed packages')
+prog.command('package list', 'List installed packages')
   .option('--username', 'Metricly Username')
   .option('--password', 'Metricly Password')
   .action(function(args, options, logger) {
@@ -57,7 +57,7 @@ prog.command('list', 'List installed packages')
     packageService.listInstalled(config, logger);
   });
 
-prog.command('get', 'Get a package by ID')
+prog.command('package get', 'Get a package by ID')
   .option('--username', 'Metricly Username')
   .option('--password', 'Metricly Password')
   .argument('<id>', 'Package Installation ID')
@@ -66,7 +66,7 @@ prog.command('get', 'Get a package by ID')
     packageService.getById(args.id, config, logger);
   });
 
-prog.command('install', 'Install a package from a Zip URL')
+prog.command('package install', 'Install a package from a Zip URL')
   .option('--username', 'Metricly Username')
   .option('--password', 'Metricly Password')
   .argument('<url>', 'Package Download URL')
@@ -75,7 +75,7 @@ prog.command('install', 'Install a package from a Zip URL')
     packageService.installFromUrl(args.url, config, logger);
   });
 
-prog.command('uninstall', 'Uninstall a package by ID')
+prog.command('package uninstall', 'Uninstall a package by ID')
   .option('--username', 'Metricly Username')
   .option('--password', 'Metricly Password')
   .argument('<id>', 'Package Installation ID')
@@ -87,7 +87,7 @@ prog.command('uninstall', 'Uninstall a package by ID')
 prog.parse(process.argv);
 
 function mergeConfig(options) {
-  var location = process.env.HOME + '/.netuitive-package-cli.json';
+  var location = process.env.HOME + '/.metricly-cli.json';
   var config = fs.existsSync(location) ? JSON.parse((fs.readFileSync(location).toString())) : {};
   return extend({}, config, options);
 }

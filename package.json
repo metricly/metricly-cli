@@ -1,7 +1,7 @@
 {
-  "name": "netuitive-package-cli",
+  "name": "metricly-cli",
   "version": "0.1.2",
-  "description": "Netuitive Package Interface",
+  "description": "Metricly CLI",
   "main": "js/index.js",
   "types": "js/index.d.ts",
   "scripts": {
@@ -10,7 +10,7 @@
     "prepublish": "tsc"
   },
   "bin": {
-    "netuitive-package": "js/bin/netuitive-package.js"
+    "metricly": "js/bin/metricly.js"
   },
   "author": "TheConnMan",
   "license": "ISC",

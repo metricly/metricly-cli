@@ -1,4 +1,4 @@
-# Package Validator
+# Metricly CLI
 Small script for parsing and validating packages.
 
 ## Use
