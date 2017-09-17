@@ -1,15 +1,19 @@
 #! /usr/bin/env node
 
-var path = require('path');
-var fs = require('fs');
-var inquirer = require('inquirer');
-var extend = require('extend');
-var pkg = require('../package.json');
+import * as path from 'path';
+import * as fs from 'fs';
+import * as inquirer from 'inquirer';
+import * as extend from 'extend';
+import * as prog from 'caporal';
 
-var validator = require('../validation/package');
-var packageService = require('../packageService/index');
+import PackageValidator from '../validation/PackageValidator';
+import PackageService from '../services/PackageService';
 
-var prog = require('caporal');
+var pkg = require('../../package.json');
+
+var packageValidator = new PackageValidator();
+var packageService = new PackageService();
+
 prog
   .version(pkg.version)
   .description(pkg.description);
@@ -34,15 +38,15 @@ prog.command('config', 'Set local defaults')
       default: config.endpoint || 'https://app.netuitive.com'
     }]).then(answers => {
       var location = process.env.HOME + '/.netuitive-package-cli.json';
-      fs.writeFileSync(location, JSON.stringify(answers, 'UTF-8', 2));
+      fs.writeFileSync(location, JSON.stringify(answers, null, 2));
     });
   });
 
 prog.command('validate', 'Validate a local package')
   .option('--location <location>', 'Path to package', /.*/, '.')
   .action(function(args, options, logger) {
-    var location = path.resolve(process.cwd(), options.location);
-    validator.validate(location, require(location + '/package.json').id);
+    var location: string = path.resolve(process.cwd(), options.location);
+    packageValidator.validate(location, require(location + '/package.json').id);
   });
 
 prog.command('list', 'List installed packages')
@@ -84,6 +88,6 @@ prog.parse(process.argv);
 
 function mergeConfig(options) {
   var location = process.env.HOME + '/.netuitive-package-cli.json';
-  var config = fs.existsSync(location) ? JSON.parse(fs.readFileSync(location)) : {};
+  var config = fs.existsSync(location) ? JSON.parse((fs.readFileSync(location).toString())) : {};
   return extend({}, config, options);
 }

@@ -1,8 +1,10 @@
-var fs = require('fs');
-var request = require('request-promise');
+import * as fs from 'fs';
+import * as request from 'request-promise';
+import * as Bluebird from 'bluebird';
 
-module.exports = {
-  listInstalled: function(config, logger) {
+class PackageService {
+
+  public listInstalled(config, logger): Bluebird<void> {
     logger.debug('\nListing installed packages');
     return request({
       uri: config.endpoint + '/packages',
@@ -20,9 +22,9 @@ module.exports = {
     }).catch(e => {
       logger.error('There was an error listing the packages');
     });
-  },
+  }
 
-  getById: function(id, config, logger) {
+  public getById(id: string, config, logger) {
     logger.debug('\nGetting package ' + id);
     return request({
       uri: config.endpoint + '/packages/' + id,
@@ -36,9 +38,9 @@ module.exports = {
     }).catch(e => {
       logger.error('There was an error getting the package');
     });
-  },
+  }
 
-  installFromUrl: function(url, config, logger) {
+  public installFromUrl(url: string, config, logger): Bluebird<void> {
     logger.debug('\nInstalling package from ' + url);
     return request.post({
       uri: config.endpoint + '/packages/',
@@ -57,9 +59,9 @@ module.exports = {
     }).catch(e => {
       logger.error('There was an error installing the package');
     });
-  },
+  }
 
-  uninstallById: function(id, config, logger) {
+  public uninstallById(id: string, config, logger): Bluebird<void> {
     logger.debug('\nUninstalling package ' + id);
     return request.delete({
       uri: config.endpoint + '/packages/' + id,
@@ -73,4 +75,6 @@ module.exports = {
       logger.error('There was an error uninstalling the package');
     });
   }
-};
+}
+
+export default PackageService;
