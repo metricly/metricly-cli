@@ -15,7 +15,7 @@
   "author": "TheConnMan",
   "license": "ISC",
   "dependencies": {
-    "caporal": "^0.6.0",
+    "caporal": "git+https://github.com/mattallty/Caporal.js.git#6d2a911f7a1521f48d23eac03717077cc88bd379",
     "extend": "^3.0.1",
     "inquirer": "^3.2.1",
     "json-dup-key-validator": "^1.0.2",

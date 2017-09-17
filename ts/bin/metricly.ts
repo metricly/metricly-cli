@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as inquirer from 'inquirer';
 import * as extend from 'extend';
-import * as prog from 'caporal';
+import * as caporal from 'caporal';
 
 import PackageValidator from '../validation/PackageValidator';
 import PackageService from '../services/PackageService';
@@ -14,11 +14,11 @@ var pkg = require('../../package.json');
 var packageValidator = new PackageValidator();
 var packageService = new PackageService();
 
-prog
+caporal
   .version(pkg.version)
   .description(pkg.description);
 
-prog.command('config', 'Set local defaults')
+caporal.command('config', 'Set local defaults')
   .action(function(args, options, logger) {
     var config = mergeConfig({});
     inquirer.prompt([{
@@ -42,14 +42,14 @@ prog.command('config', 'Set local defaults')
     });
   });
 
-prog.command('package validate', 'Validate a local package')
+caporal.command('package validate', 'Validate a local package')
   .option('--location <location>', 'Path to package', /.*/, '.')
   .action(function(args, options, logger) {
     var location: string = path.resolve(process.cwd(), options.location);
     packageValidator.validate(location, require(location + '/package.json').id);
   });
 
-prog.command('package list', 'List installed packages')
+caporal.command('package list', 'List installed packages')
   .option('--username', 'Metricly Username')
   .option('--password', 'Metricly Password')
   .action(function(args, options, logger) {
@@ -57,7 +57,7 @@ prog.command('package list', 'List installed packages')
     packageService.listInstalled(config, logger);
   });
 
-prog.command('package get', 'Get a package by ID')
+caporal.command('package get', 'Get a package by ID')
   .option('--username', 'Metricly Username')
   .option('--password', 'Metricly Password')
   .argument('<id>', 'Package Installation ID')
@@ -66,7 +66,7 @@ prog.command('package get', 'Get a package by ID')
     packageService.getById(args.id, config, logger);
   });
 
-prog.command('package install', 'Install a package from a Zip URL')
+caporal.command('package install', 'Install a package from a Zip URL')
   .option('--username', 'Metricly Username')
   .option('--password', 'Metricly Password')
   .argument('<url>', 'Package Download URL')
@@ -75,7 +75,7 @@ prog.command('package install', 'Install a package from a Zip URL')
     packageService.installFromUrl(args.url, config, logger);
   });
 
-prog.command('package uninstall', 'Uninstall a package by ID')
+caporal.command('package uninstall', 'Uninstall a package by ID')
   .option('--username', 'Metricly Username')
   .option('--password', 'Metricly Password')
   .argument('<id>', 'Package Installation ID')
@@ -84,7 +84,7 @@ prog.command('package uninstall', 'Uninstall a package by ID')
     packageService.uninstallById(args.id, config, logger);
   });
 
-prog.parse(process.argv);
+caporal.parse(process.argv);
 
 function mergeConfig(options) {
   var location = process.env.HOME + '/.metricly-cli.json';
