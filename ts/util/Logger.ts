@@ -7,6 +7,7 @@ class Logger {
   }
 
   public log(message: string) {
+    // tslint:disable-next-line:no-console
     console.log(this.indent + message);
   }
 }

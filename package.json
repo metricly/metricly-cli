@@ -6,8 +6,8 @@
   "types": "js/index.d.ts",
   "scripts": {
     "compile": "tsc -p tsconfig.json",
-    "test": "nyc mocha",
-    "prepublish": "tsc"
+    "lint": "tslint -p tslint.json",
+    "prepublish": "npm run compile && npm run lint"
   },
   "bin": {
     "metricly": "js/bin/metricly.js"
@@ -29,6 +29,7 @@
     "@types/request": "^2.0.3",
     "@types/request-promise": "^4.1.37",
     "ts-node": "^3.3.0",
+    "tslint": "^5.8.0",
     "typescript": "^2.5.2"
   }
 }

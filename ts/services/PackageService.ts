@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import * as request from 'request-promise';
-import * as Bluebird from 'bluebird';
 
 class PackageService {
 
@@ -17,7 +16,7 @@ class PackageService {
       logger.info('The following packages are installed:');
       logger.info(JSON.parse(body).packages.sort((pkg1, pkg2) => {
         return pkg1.name.localeCompare(pkg2.name);
-      }).map(pkg => {
+      }).map((pkg) => {
         return pkg.name + ':v' + pkg.version + ' (ID: ' + pkg.id + ')';
       }));
     } catch (e) {
@@ -35,7 +34,7 @@ class PackageService {
           pass: config.password
         }
       });
-      var pkg = JSON.parse(body).package;
+      const pkg = JSON.parse(body).package;
       logger.info(JSON.stringify(pkg, null, 2));
     } catch (e) {
       logger.error('There was an error getting the package');
