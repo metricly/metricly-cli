@@ -34,7 +34,7 @@ const policyService = new PolicyService();
       default: config.password,
       message: 'Metricly Password',
       name: 'password',
-      type: 'input'
+      type: 'password'
     }, {
       default: config.endpoint || 'https://app.netuitive.com',
       message: 'Metricly Endpoint',
