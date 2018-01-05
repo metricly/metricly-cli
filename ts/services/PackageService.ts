@@ -7,11 +7,11 @@ class PackageService {
     logger.debug('\nListing installed packages');
     try {
       const body = await request({
-        uri: config.endpoint + '/packages',
         auth: {
-          user: config.username,
-          pass: config.password
-        }
+          pass: config.password,
+          user: config.username
+        },
+        uri: config.endpoint + '/packages'
       });
       logger.info('The following packages are installed:');
       logger.info(JSON.parse(body).packages.sort((pkg1, pkg2) => {
@@ -28,11 +28,11 @@ class PackageService {
     logger.debug('\nGetting package ' + id);
     try {
       const body = await request({
-        uri: config.endpoint + '/packages/' + id,
         auth: {
-          user: config.username,
-          pass: config.password
-        }
+          pass: config.password,
+          user: config.username
+        },
+        uri: config.endpoint + '/packages/' + id
       });
       const pkg = JSON.parse(body).package;
       logger.info(JSON.stringify(pkg, null, 2));
@@ -45,17 +45,17 @@ class PackageService {
     logger.debug('\nInstalling package from ' + url);
     try {
       const body = await request.post({
-        uri: config.endpoint + '/packages/',
         auth: {
-          user: config.username,
-          pass: config.password
+          pass: config.password,
+          user: config.username
         },
         json: {
           archives: [url]
         },
         qs: {
           userEmail: config.username
-        }
+        },
+        uri: config.endpoint + '/packages/'
       });
       logger.info('Successfully installed package, ID: ' + body.packages[0].id);
     } catch (e) {
@@ -67,11 +67,11 @@ class PackageService {
     logger.debug('\nUninstalling package ' + id);
     try {
       const body = await request.delete({
-        uri: config.endpoint + '/packages/' + id,
         auth: {
-          user: config.username,
-          pass: config.password
-        }
+          pass: config.password,
+          user: config.username
+        },
+        uri: config.endpoint + '/packages/' + id
       });
       logger.info('Successfully uninstalled package ' + id);
     } catch (e) {

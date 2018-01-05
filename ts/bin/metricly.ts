@@ -24,20 +24,20 @@ const packageService = new PackageService();
   .action((args, options, logger) => {
     const config = mergeConfig({});
     inquirer.prompt([{
-      type: 'input',
-      name: 'username',
+      default: config.username,
       message: 'Metricly Username',
-      default: config.username
+      name: 'username',
+      type: 'input'
     }, {
-      type: 'input',
-      name: 'password',
+      default: config.password,
       message: 'Metricly Password',
-      default: config.password
+      name: 'password',
+      type: 'input'
     }, {
-      type: 'input',
-      name: 'endpoint',
+      default: config.endpoint || 'https://app.netuitive.com',
       message: 'Metricly Endpoint',
-      default: config.endpoint || 'https://app.netuitive.com'
+      name: 'endpoint',
+      type: 'input'
     }]).then((answers) => {
       const location = process.env.HOME + '/.metricly-cli.json';
       fs.writeFileSync(location, JSON.stringify(answers, null, 2));
