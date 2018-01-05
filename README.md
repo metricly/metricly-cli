@@ -4,7 +4,7 @@ Official Metricly command line utility
 ## Use
 
 ```
-npm i -g https://github.com/metricly/metricly-cli
+npm i -g metricly-cli
 metricly -h
 ```
 
