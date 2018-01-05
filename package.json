@@ -7,7 +7,7 @@
   "scripts": {
     "compile": "tsc -p tsconfig.json",
     "lint": "tslint -p tslint.json",
-    "prepublish": "npm run compile && npm run lint"
+    "prepublish": "yarn run compile && yarn run lint"
   },
   "bin": {
     "metricly": "js/bin/metricly.js"
@@ -15,7 +15,7 @@
   "author": "TheConnMan",
   "license": "ISC",
   "dependencies": {
-    "caporal": "git+https://github.com/mattallty/Caporal.js.git#6d2a911f7a1521f48d23eac03717077cc88bd379",
+    "caporal": "^0.9.0",
     "extend": "^3.0.1",
     "inquirer": "^3.2.1",
     "json-dup-key-validator": "^1.0.2",
