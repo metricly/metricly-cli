@@ -7,6 +7,7 @@ import * as inquirer from 'inquirer';
 import * as path from 'path';
 
 import PackageService from '../services/PackageService';
+import PolicyService from '../services/PolicyService';
 import PackageValidator from '../validation/PackageValidator';
 
 // tslint:disable-next-line:no-var-requires
@@ -14,6 +15,7 @@ const pkg = require('../../package.json');
 
 const packageValidator = new PackageValidator();
 const packageService = new PackageService();
+const policyService = new PolicyService();
 
 (caporal as any)
   .version(pkg.version)
@@ -89,6 +91,15 @@ const packageService = new PackageService();
   .action((args, options, logger) => {
     const config = mergeConfig(options);
     packageService.uninstallById(args.id, config, logger);
+  });
+
+(caporal as any)
+  .command('policy list', 'List all policies')
+  .option('--username', 'Metricly Username')
+  .option('--password', 'Metricly Password')
+  .action((args, options, logger) => {
+    const config = mergeConfig(options);
+    policyService.listAll(config, logger);
   });
 
 (caporal as any).parse(process.argv);
