@@ -15,4 +15,6 @@ npm i -g yarn
 git clone https://github.com/metricly/metricly-cli.git
 cd metricly-cli/
 yarn
+yarn run compile
+node js/bin/metricly.js
 ```
