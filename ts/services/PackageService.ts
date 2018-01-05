@@ -20,7 +20,7 @@ class PackageService {
         return pkg.name + ':v' + pkg.version + ' (ID: ' + pkg.id + ')';
       }));
     } catch (e) {
-      logger.error('There was an error listing the packages');
+      logger.error('There was an error listing the packages: ' + e);
     }
   }
 
@@ -37,7 +37,7 @@ class PackageService {
       const pkg = JSON.parse(body).package;
       logger.info(JSON.stringify(pkg, null, 2));
     } catch (e) {
-      logger.error('There was an error getting the package');
+      logger.error('There was an error getting the package: ' + e);
     }
   }
 
@@ -59,7 +59,7 @@ class PackageService {
       });
       logger.info('Successfully installed package, ID: ' + body.packages[0].id);
     } catch (e) {
-      logger.error('There was an error installing the package');
+      logger.error('There was an error installing the package: ' + e);
     }
   }
 
@@ -75,7 +75,7 @@ class PackageService {
       });
       logger.info('Successfully uninstalled package ' + id);
     } catch (e) {
-      logger.error('There was an error uninstalling the package');
+      logger.error('There was an error uninstalling the package: ' + e);
     }
   }
 }
