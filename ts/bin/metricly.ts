@@ -102,6 +102,16 @@ const policyService = new PolicyService();
     policyService.listAll(config, logger);
   });
 
+(caporal as any)
+  .command('policy get', 'Get a policy by ID')
+  .option('--username', 'Metricly Username')
+  .option('--password', 'Metricly Password')
+  .argument('<id>', 'Policy ID')
+  .action((args, options, logger) => {
+    const config = mergeConfig(options);
+    policyService.getById(args.id, config, logger);
+  });
+
 (caporal as any).parse(process.argv);
 
 function mergeConfig(options) {

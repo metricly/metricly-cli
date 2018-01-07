@@ -23,6 +23,23 @@ class PolicyService {
       logger.error('There was an error listing the policies: ' + e);
     }
   }
+
+  public async getById(id: string, config, logger): Promise<void> {
+    logger.debug('\nGetting policy ' + id);
+    try {
+      const body = await request({
+        auth: {
+          pass: config.password,
+          user: config.username
+        },
+        uri: config.endpoint + '/policies/' + id
+      });
+      const pol = JSON.parse(body);
+      logger.info(JSON.stringify(pol, null, 2));
+    } catch (e) {
+      logger.error('There was an error getting the policy: ' + e);
+    }
+  }
 }
 
 export default PolicyService;
