@@ -6,15 +6,16 @@ class PackageService {
   public async listInstalled(config, logger): Promise<void> {
     logger.debug('\nListing installed packages');
     try {
-      const body = await request({
+      const response = await request({
         auth: {
           pass: config.password,
           user: config.username
         },
+        json: true,
         uri: config.endpoint + '/packages'
       });
       logger.info('The following packages are installed:');
-      logger.info(JSON.parse(body).packages.sort((pkg1, pkg2) => {
+      logger.info(response.packages.sort((pkg1, pkg2) => {
         return pkg1.name.localeCompare(pkg2.name);
       }).map((pkg) => {
         return pkg.name + ':v' + pkg.version + ' (ID: ' + pkg.id + ')';
@@ -27,15 +28,15 @@ class PackageService {
   public async getById(id: string, config, logger): Promise<void> {
     logger.debug('\nGetting package ' + id);
     try {
-      const body = await request({
+      const response = await request({
         auth: {
           pass: config.password,
           user: config.username
         },
+        json: true,
         uri: config.endpoint + '/packages/' + id
       });
-      const pkg = JSON.parse(body).package;
-      logger.info(JSON.stringify(pkg, null, 2));
+      logger.info(JSON.stringify(response, null, 2));
     } catch (e) {
       logger.error('There was an error getting the package: ' + e);
     }
