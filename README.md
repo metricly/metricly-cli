@@ -19,6 +19,12 @@ npm i -g yarn
 git clone https://github.com/metricly/metricly-cli.git
 cd metricly-cli/
 yarn
+
+// Compile and run Node
 yarn run compile
 node js/bin/metricly.js
+
+// Run directly with TypeScript
+npm install -g ts-node
+ts-node ts/bin/metricly.ts
 ```
