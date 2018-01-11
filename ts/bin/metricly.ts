@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import * as inquirer from 'inquirer';
 import * as path from 'path';
 
+import DashboardService from '../services/DashboardService';
 import PackageService from '../services/PackageService';
 import PolicyService from '../services/PolicyService';
 import PackageValidator from '../validation/PackageValidator';
@@ -16,6 +17,7 @@ const pkg = require('../../package.json');
 const packageValidator = new PackageValidator();
 const packageService = new PackageService();
 const policyService = new PolicyService();
+const dashboardService = new DashboardService();
 
 (caporal as any)
   .version(pkg.version)
@@ -110,6 +112,25 @@ const policyService = new PolicyService();
   .action((args, options, logger) => {
     const config = mergeConfig(options);
     policyService.getById(args.id, config, logger);
+  });
+
+(caporal as any)
+  .command('dashboard list', 'List all dashboards')
+  .option('--username', 'Metricly Username')
+  .option('--password', 'Metricly Password')
+  .action((args, options, logger) => {
+    const config = mergeConfig(options);
+    dashboardService.list(config, logger);
+  });
+
+(caporal as any)
+  .command('dashboard get', 'Get a dashboard by ID')
+  .option('--username', 'Metricly Username')
+  .option('--password', 'Metricly Password')
+  .argument('<id>', 'Dashboard ID')
+  .action((args, options, logger) => {
+    const config = mergeConfig(options);
+    dashboardService.getById(args.id, config, logger);
   });
 
 (caporal as any).parse(process.argv);
