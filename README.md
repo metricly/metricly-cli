@@ -1,10 +1,30 @@
-# Package Validator
-Small script for parsing and validating packages.
+# Metricly CLI
+Official Metricly command line utility
 
 ## Use
-**Package Validator** requires all the Netuitive packages to be cloned in the same directory so **Package Validator** can crawl that directory. **Package Validator** filters for folders which start with **netuitive-packages-** so it's fine with clone this project in the same folder as all the packages.
 
-To run the report run `node index.js <package-directory>`.
+Attached to the [latest GitHub release](https://github.com/metricly/metricly-cli/releases/latest) there are binaries for Mac, Windows, and Linux. Download the binary for your system, add it to your path, make it executable, and run `metricly -h`.
 
-## Single Use
-**Package Validator** can be installed globally with `npm install -g git+https://git@github.com/Netuitive/netuitive-package-validator.git`. Validate a package in the current directory with `validate-package` or run `validate-package --help` for additional options.
+### NPM
+
+```
+npm i -g metricly-cli
+metricly -h
+```
+
+## Development
+
+```
+npm i -g yarn
+git clone https://github.com/metricly/metricly-cli.git
+cd metricly-cli/
+yarn
+
+// Compile and run Node
+yarn run compile
+node js/bin/metricly.js
+
+// Run directly with TypeScript
+npm install -g ts-node
+ts-node ts/bin/metricly.ts
+```
