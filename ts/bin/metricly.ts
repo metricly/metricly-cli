@@ -7,13 +7,10 @@ import * as inquirer from 'inquirer';
 import DashboardCommands from '../commands/DashboardCommands';
 import PackageCommands from '../commands/PackageCommands';
 import PolicyCommands from '../commands/PolicyCommands';
-import DashboardService from '../services/DashboardService';
 import CommandUtils from '../util/CommandUtils';
 
 // tslint:disable-next-line:no-var-requires
 const pkg = require('../../package.json');
-
-const dashboardService = new DashboardService();
 
 (caporal as any)
   .version(pkg.version)
