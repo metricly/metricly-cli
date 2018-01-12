@@ -1,14 +1,13 @@
 #! /usr/bin/env node
 
 import * as caporal from 'caporal';
-import * as extend from 'extend';
 import * as fs from 'fs';
 import * as inquirer from 'inquirer';
-import * as path from 'path';
 
 import DashboardService from '../services/DashboardService';
 import PackageService from '../services/PackageService';
 import PolicyService from '../services/PolicyService';
+import CommandUtils from '../util/CommandUtils';
 import PackageValidator from '../validation/PackageValidator';
 
 // tslint:disable-next-line:no-var-requires
@@ -26,7 +25,7 @@ const dashboardService = new DashboardService();
 (caporal as any)
   .command('config', 'Set local defaults')
   .action((args, options, logger) => {
-    const config = mergeConfig({});
+    const config = CommandUtils.mergeConfig({});
     inquirer.prompt([{
       default: config.username,
       message: 'Metricly Username',
@@ -61,7 +60,7 @@ const dashboardService = new DashboardService();
   .option('--username', 'Metricly Username')
   .option('--password', 'Metricly Password')
   .action((args, options, logger) => {
-    const config = mergeConfig(options);
+    const config = CommandUtils.mergeConfig(options);
     packageService.listInstalled(config, logger);
   });
 
@@ -71,7 +70,7 @@ const dashboardService = new DashboardService();
   .option('--password', 'Metricly Password')
   .argument('<id>', 'Package Installation ID')
   .action((args, options, logger) => {
-    const config = mergeConfig(options);
+    const config = CommandUtils.mergeConfig(options);
     packageService.getById(args.id, config, logger);
   });
 
@@ -81,7 +80,7 @@ const dashboardService = new DashboardService();
   .option('--password', 'Metricly Password')
   .argument('<url>', 'Package Download URL')
   .action((args, options, logger) => {
-    const config = mergeConfig(options);
+    const config = CommandUtils.mergeConfig(options);
     packageService.installFromUrl(args.url, config, logger);
   });
 
@@ -91,7 +90,7 @@ const dashboardService = new DashboardService();
   .option('--password', 'Metricly Password')
   .argument('<id>', 'Package Installation ID')
   .action((args, options, logger) => {
-    const config = mergeConfig(options);
+    const config = CommandUtils.mergeConfig(options);
     packageService.uninstallById(args.id, config, logger);
   });
 
@@ -100,7 +99,7 @@ const dashboardService = new DashboardService();
   .option('--username', 'Metricly Username')
   .option('--password', 'Metricly Password')
   .action((args, options, logger) => {
-    const config = mergeConfig(options);
+    const config = CommandUtils.mergeConfig(options);
     policyService.listAll(config, logger);
   });
 
@@ -110,7 +109,7 @@ const dashboardService = new DashboardService();
   .option('--password', 'Metricly Password')
   .argument('<id>', 'Policy ID')
   .action((args, options, logger) => {
-    const config = mergeConfig(options);
+    const config = CommandUtils.mergeConfig(options);
     policyService.getById(args.id, config, logger);
   });
 
@@ -119,7 +118,7 @@ const dashboardService = new DashboardService();
   .option('--username', 'Metricly Username')
   .option('--password', 'Metricly Password')
   .action((args, options, logger) => {
-    const config = mergeConfig(options);
+    const config = CommandUtils.mergeConfig(options);
     dashboardService.list(config, logger);
   });
 
@@ -129,14 +128,8 @@ const dashboardService = new DashboardService();
   .option('--password', 'Metricly Password')
   .argument('<id>', 'Dashboard ID')
   .action((args, options, logger) => {
-    const config = mergeConfig(options);
+    const config = CommandUtils.mergeConfig(options);
     dashboardService.getById(args.id, config, logger);
   });
 
 (caporal as any).parse(process.argv);
-
-function mergeConfig(options) {
-  const location = process.env.HOME + '/.metricly-cli.json';
-  const config = fs.existsSync(location) ? JSON.parse((fs.readFileSync(location).toString())) : {};
-  return extend({}, config, options);
-}
