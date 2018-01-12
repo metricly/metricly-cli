@@ -4,6 +4,7 @@ import * as caporal from 'caporal';
 import * as fs from 'fs';
 import * as inquirer from 'inquirer';
 
+import DashboardCommands from '../commands/DashboardCommands';
 import PackageCommands from '../commands/PackageCommands';
 import PolicyCommands from '../commands/PolicyCommands';
 import DashboardService from '../services/DashboardService';
@@ -47,23 +48,6 @@ PackageCommands.addCommands();
 
 PolicyCommands.addCommands();
 
-(caporal as any)
-  .command('dashboard list', 'List all dashboards')
-  .option('--username', 'Metricly Username')
-  .option('--password', 'Metricly Password')
-  .action((args, options, logger) => {
-    const config = CommandUtils.mergeConfig(options);
-    dashboardService.list(config, logger);
-  });
-
-(caporal as any)
-  .command('dashboard get', 'Get a dashboard by ID')
-  .option('--username', 'Metricly Username')
-  .option('--password', 'Metricly Password')
-  .argument('<id>', 'Dashboard ID')
-  .action((args, options, logger) => {
-    const config = CommandUtils.mergeConfig(options);
-    dashboardService.getById(args.id, config, logger);
-  });
+DashboardCommands.addCommands();
 
 (caporal as any).parse(process.argv);
