@@ -4,17 +4,14 @@ import * as caporal from 'caporal';
 import * as fs from 'fs';
 import * as inquirer from 'inquirer';
 
+import PackageCommands from '../commands/PackageCommands';
 import DashboardService from '../services/DashboardService';
-import PackageService from '../services/PackageService';
 import PolicyService from '../services/PolicyService';
 import CommandUtils from '../util/CommandUtils';
-import PackageValidator from '../validation/PackageValidator';
 
 // tslint:disable-next-line:no-var-requires
 const pkg = require('../../package.json');
 
-const packageValidator = new PackageValidator();
-const packageService = new PackageService();
 const policyService = new PolicyService();
 const dashboardService = new DashboardService();
 
@@ -47,52 +44,7 @@ const dashboardService = new DashboardService();
     });
   });
 
-(caporal as any)
-  .command('package validate', 'Validate a local package')
-  .option('--location <location>', 'Path to package', /.*/, '.')
-  .action((args, options, logger) => {
-    const location: string = path.resolve(process.cwd(), options.location);
-    packageValidator.validate(location, require(location + '/package.json').id);
-  });
-
-(caporal as any)
-  .command('package list', 'List installed packages')
-  .option('--username', 'Metricly Username')
-  .option('--password', 'Metricly Password')
-  .action((args, options, logger) => {
-    const config = CommandUtils.mergeConfig(options);
-    packageService.listInstalled(config, logger);
-  });
-
-(caporal as any)
-  .command('package get', 'Get a package by ID')
-  .option('--username', 'Metricly Username')
-  .option('--password', 'Metricly Password')
-  .argument('<id>', 'Package Installation ID')
-  .action((args, options, logger) => {
-    const config = CommandUtils.mergeConfig(options);
-    packageService.getById(args.id, config, logger);
-  });
-
-(caporal as any)
-  .command('package install', 'Install a package from a Zip URL')
-  .option('--username', 'Metricly Username')
-  .option('--password', 'Metricly Password')
-  .argument('<url>', 'Package Download URL')
-  .action((args, options, logger) => {
-    const config = CommandUtils.mergeConfig(options);
-    packageService.installFromUrl(args.url, config, logger);
-  });
-
-(caporal as any)
-  .command('package uninstall', 'Uninstall a package by ID')
-  .option('--username', 'Metricly Username')
-  .option('--password', 'Metricly Password')
-  .argument('<id>', 'Package Installation ID')
-  .action((args, options, logger) => {
-    const config = CommandUtils.mergeConfig(options);
-    packageService.uninstallById(args.id, config, logger);
-  });
+PackageCommands.addCommands();
 
 (caporal as any)
   .command('policy list', 'List all policies')
