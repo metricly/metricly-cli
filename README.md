@@ -28,3 +28,17 @@ node js/bin/metricly.js
 npm install -g ts-node
 ts-node ts/bin/metricly.ts
 ```
+
+## Docker
+
+```
+// Build and run / develop as a docker container
+docker build -t metricly-cli .
+
+// Run it as a docker command
+docker run -it -v ~/.metricly-cli.json:/root/.metricly-cli.json:rw metricly-cli
+
+// Use it as an alias. Edit ~/.bash_profile and add:
+alias metricly-cli="docker run -it -v ~/.metricly-cli.json:/root/.metricly-cli.json:rw metricly-cli"
+$ metricly-cli
+```
