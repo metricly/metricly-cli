@@ -5,7 +5,7 @@ import CommandUtils from '../util/CommandUtils';
 
 const dashboardService = new DashboardService();
 
-class PolicyCommands {
+class DashboardCommands {
 
   public static addCommands() {
     (caporal as any)
@@ -29,4 +29,4 @@ class PolicyCommands {
   }
 }
 
-export default PolicyCommands;
+export default DashboardCommands;
