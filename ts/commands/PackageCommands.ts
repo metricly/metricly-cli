@@ -23,6 +23,7 @@ class PackageCommands {
       .command('package list', 'List installed packages')
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
+      .option('--profile', 'Metricly profile', /.*/, 'default')
       .action((args, options, logger) => {
         const config = CommandUtils.mergeConfig(options);
         packageService.listInstalled(config, logger);
@@ -32,6 +33,7 @@ class PackageCommands {
       .command('package get', 'Get a package by ID')
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
+      .option('--profile', 'Metricly profile', /.*/, 'default')
       .argument('<id>', 'Package Installation ID')
       .action((args, options, logger) => {
         const config = CommandUtils.mergeConfig(options);
@@ -42,6 +44,7 @@ class PackageCommands {
       .command('package install', 'Install a package from a Zip URL')
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
+      .option('--profile', 'Metricly profile', /.*/, 'default')
       .argument('<url>', 'Package Download URL')
       .action((args, options, logger) => {
         const config = CommandUtils.mergeConfig(options);
@@ -52,6 +55,7 @@ class PackageCommands {
       .command('package uninstall', 'Uninstall a package by ID')
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
+      .option('--profile', 'Metricly profile', /.*/, 'default')
       .argument('<id>', 'Package Installation ID')
       .action((args, options, logger) => {
         const config = CommandUtils.mergeConfig(options);

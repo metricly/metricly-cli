@@ -10,7 +10,7 @@ class CommandUtils {
 
   public static mergeConfig(options) {
     const config = this.getConfig();
-    return extend({}, config, options);
+    return extend({}, config[options.profile], options);
   }
 
   public static saveConfig(config) {

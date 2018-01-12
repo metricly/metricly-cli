@@ -9,26 +9,28 @@ class ConfigCommands {
   public static addCommands() {
     (caporal as any)
       .command('config', 'Set local defaults')
+      .option('--profile', 'Metricly profile', /.*/, 'default')
       .action((args, options, logger) => {
-        const config = CommandUtils.mergeConfig(options);
+        const profileConfig = CommandUtils.getConfig()[options.profile] || {};
         inquirer.prompt([{
-          default: config.username,
+          default: profileConfig.username,
           message: 'Metricly Username',
           name: 'username',
           type: 'input'
         }, {
-          default: config.password,
+          default: profileConfig.password,
           message: 'Metricly Password',
           name: 'password',
           type: 'password'
         }, {
-          default: config.endpoint || 'https://app.netuitive.com',
+          default: profileConfig.endpoint || 'https://app.netuitive.com',
           message: 'Metricly Endpoint',
           name: 'endpoint',
           type: 'input'
         }]).then((answers) => {
-          const location = process.env.HOME + '/.metricly-cli.json';
-          fs.writeFileSync(location, JSON.stringify(answers, null, 2));
+          const config = CommandUtils.getConfig();
+          config[options.profile] = answers;
+          CommandUtils.saveConfig(config);
         });
       });
   }

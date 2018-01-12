@@ -12,6 +12,7 @@ class DashboardCommands {
       .command('dashboard list', 'List all dashboards')
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
+      .option('--profile', 'Metricly profile', /.*/, 'default')
       .action((args, options, logger) => {
         const config = CommandUtils.mergeConfig(options);
         dashboardService.list(config, logger);
@@ -21,6 +22,7 @@ class DashboardCommands {
       .command('dashboard get', 'Get a dashboard by ID')
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
+      .option('--profile', 'Metricly profile', /.*/, 'default')
       .argument('<id>', 'Dashboard ID')
       .action((args, options, logger) => {
         const config = CommandUtils.mergeConfig(options);
