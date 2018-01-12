@@ -5,14 +5,13 @@ import * as fs from 'fs';
 import * as inquirer from 'inquirer';
 
 import PackageCommands from '../commands/PackageCommands';
+import PolicyCommands from '../commands/PolicyCommands';
 import DashboardService from '../services/DashboardService';
-import PolicyService from '../services/PolicyService';
 import CommandUtils from '../util/CommandUtils';
 
 // tslint:disable-next-line:no-var-requires
 const pkg = require('../../package.json');
 
-const policyService = new PolicyService();
 const dashboardService = new DashboardService();
 
 (caporal as any)
@@ -46,24 +45,7 @@ const dashboardService = new DashboardService();
 
 PackageCommands.addCommands();
 
-(caporal as any)
-  .command('policy list', 'List all policies')
-  .option('--username', 'Metricly Username')
-  .option('--password', 'Metricly Password')
-  .action((args, options, logger) => {
-    const config = CommandUtils.mergeConfig(options);
-    policyService.listAll(config, logger);
-  });
-
-(caporal as any)
-  .command('policy get', 'Get a policy by ID')
-  .option('--username', 'Metricly Username')
-  .option('--password', 'Metricly Password')
-  .argument('<id>', 'Policy ID')
-  .action((args, options, logger) => {
-    const config = CommandUtils.mergeConfig(options);
-    policyService.getById(args.id, config, logger);
-  });
+PolicyCommands.addCommands();
 
 (caporal as any)
   .command('dashboard list', 'List all dashboards')
