@@ -1,8 +1,6 @@
 #! /usr/bin/env node
 
 import * as caporal from 'caporal';
-import * as fs from 'fs';
-import * as path from 'path';
 
 import ConfigCommands from '../commands/ConfigCommands';
 import DashboardCommands from '../commands/DashboardCommands';
