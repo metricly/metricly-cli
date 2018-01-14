@@ -15,6 +15,7 @@ const pkg = require('../../package.json');
   .version(pkg.version)
   .description(pkg.description);
 
+ConfigCommands.addCommands();
 PackageCommands.addCommands();
 PolicyCommands.addCommands();
 DashboardCommands.addCommands();
