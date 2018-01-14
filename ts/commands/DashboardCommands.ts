@@ -1,8 +1,9 @@
 import * as caporal from 'caporal';
 
+import ConfigService from '../services/ConfigService';
 import DashboardService from '../services/DashboardService';
-import CommandUtils from '../util/CommandUtils';
 
+const configService = new ConfigService();
 const dashboardService = new DashboardService();
 
 class DashboardCommands {
@@ -14,7 +15,7 @@ class DashboardCommands {
       .option('--password', 'Metricly Password')
       .option('--profile', 'Metricly profile', /.*/, 'default')
       .action((args, options, logger) => {
-        const config = CommandUtils.mergeConfig(options);
+        const config = configService.mergeConfig(options);
         dashboardService.list(config, logger);
       });
 
@@ -25,7 +26,7 @@ class DashboardCommands {
       .option('--profile', 'Metricly profile', /.*/, 'default')
       .argument('<id>', 'Dashboard ID')
       .action((args, options, logger) => {
-        const config = CommandUtils.mergeConfig(options);
+        const config = configService.mergeConfig(options);
         dashboardService.getById(args.id, config, logger);
       });
   }
