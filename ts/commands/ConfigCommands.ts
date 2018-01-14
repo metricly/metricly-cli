@@ -2,33 +2,37 @@ import * as caporal from 'caporal';
 import * as fs from 'fs';
 import * as inquirer from 'inquirer';
 
-import CommandUtils from '../util/CommandUtils';
+import ConfigService from '../services/ConfigService';
+
+const configService = new ConfigService();
 
 class ConfigCommands {
 
   public static addCommands() {
     (caporal as any)
       .command('config', 'Set local defaults')
+      .option('--profile', 'Metricly profile', /.*/, 'default')
       .action((args, options, logger) => {
-        const config = CommandUtils.mergeConfig(options);
+        const profileConfig = configService.getConfig()[options.profile] || {};
         inquirer.prompt([{
-          default: config.username,
+          default: profileConfig.username,
           message: 'Metricly Username',
           name: 'username',
           type: 'input'
         }, {
-          default: config.password,
+          default: profileConfig.password,
           message: 'Metricly Password',
           name: 'password',
           type: 'password'
         }, {
-          default: config.endpoint || 'https://app.netuitive.com',
+          default: profileConfig.endpoint || 'https://app.netuitive.com',
           message: 'Metricly Endpoint',
           name: 'endpoint',
           type: 'input'
         }]).then((answers) => {
-          const location = process.env.HOME + '/.metricly-cli.json';
-          fs.writeFileSync(location, JSON.stringify(answers, null, 2));
+          const config = configService.getConfig();
+          config[options.profile] = answers;
+          configService.saveConfig(config);
         });
       });
   }
