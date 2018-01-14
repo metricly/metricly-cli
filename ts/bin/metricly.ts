@@ -7,7 +7,6 @@ import DashboardCommands from '../commands/DashboardCommands';
 import PackageCommands from '../commands/PackageCommands';
 import PolicyCommands from '../commands/PolicyCommands';
 import VersionCommands from '../commands/VersionCommands';
-import CommandUtils from '../util/CommandUtils';
 
 // tslint:disable-next-line:no-var-requires
 const pkg = require('../../package.json');
