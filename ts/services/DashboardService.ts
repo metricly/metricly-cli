@@ -15,12 +15,17 @@ class DashboardService {
         json: true,
         uri: config.endpoint + '/dashboards'
       });
-      logger.info('The following dashboards are available:');
-      logger.info(response.dashboards.sort((dsb1, dsb2) => {
-        return dsb1.name.localeCompare(dsb2.name);
-      }).map((dsb) => {
-        return dsb.name + ' (ID: ' + dsb.id + ')';
-      }));
+      if (config.options.format === 'text') {
+        logger.info('The following dashboards are available:');
+        logger.info(response.dashboards.sort((dsb1, dsb2) => {
+          return dsb1.name.localeCompare(dsb2.name);
+        }).map((dsb) => {
+          return dsb.name + ' (ID: ' + dsb.id + ')';
+        }));
+      }
+      if (config.options.format === 'json') {
+        logger.info(JSON.stringify(response, null, 2));
+      }
     } catch (e) {
       logger.error('There was an error listing the dashboards: ' + e);
     }
@@ -37,7 +42,12 @@ class DashboardService {
         json: true,
         uri: config.endpoint + '/dashboards/' + id
       });
-      logger.info(JSON.stringify(response, null, 2));
+      if (config.options.format === 'text') {
+        logger.info(response.dashboard.name);
+      }
+      if (config.options.format === 'json') {
+        logger.info(JSON.stringify(response, null, 2));
+      }
     } catch (e) {
       logger.error('There was an error getting the dashboard: ' + e);
     }
