@@ -1,6 +1,6 @@
 {
   "name": "metricly-cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Metricly CLI",
   "main": "js/index.js",
   "types": "js/index.d.ts",
@@ -18,11 +18,13 @@
   "license": "ISC",
   "dependencies": {
     "caporal": "^0.9.0",
+    "chalk": "^2.3.0",
     "extend": "^3.0.1",
     "inquirer": "^3.2.1",
     "json-dup-key-validator": "^1.0.2",
     "request": "^2.81.0",
-    "request-promise": "^4.2.1"
+    "request-promise": "^4.2.1",
+    "update-notifier": "^2.3.0"
   },
   "devDependencies": {
     "@types/extend": "^2.0.30",
@@ -30,6 +32,7 @@
     "@types/node": "^8.0.28",
     "@types/request": "^2.0.3",
     "@types/request-promise": "^4.1.37",
+    "@types/update-notifier": "^1.0.2",
     "pkg": "^4.3.0-beta.5",
     "ts-node": "^3.3.0",
     "tslint": "^5.8.0",
