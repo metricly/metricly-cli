@@ -13,15 +13,18 @@ import PolicyCommands from '../commands/PolicyCommands';
 const pkg = require('../../package.json');
 
 const notifier = updateNotifier({ pkg });
+const update = notifier.update;
 
-notifier.notify({
-  defer: false,
-  message: [
-    'Update available ' + chalk.dim(notifier.update.current) + chalk.reset(' → ') + chalk.green(notifier.update.latest),
-    'Run ' + chalk.cyan('npm i -g metricly-cli') + ' or download the latest binary to upgrade',
-    chalk.blue('https://github.com/metricly/metricly-cli/releases/latest')
-  ].join('\n')
-});
+if (update) {
+  notifier.notify({
+    defer: false,
+    message: [
+      'Update available ' + chalk.dim(update.current) + chalk.reset(' → ') + chalk.green(update.latest),
+      'Run ' + chalk.cyan('npm i -g metricly-cli') + ' or download the latest binary to upgrade',
+      chalk.blue('https://github.com/metricly/metricly-cli/releases/latest')
+    ].join('\n')
+  });
+}
 
 (caporal as any)
   .version(pkg.version)
