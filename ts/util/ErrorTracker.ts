@@ -30,11 +30,11 @@ class ErrorTracker {
     }
   }
 
-  public assertEquals(string1: string, string2: string, message: string): void {
-    this.assertTrue(string1 === string2, message);
-    if (string1 !== string2) {
-      this.logger.log('  First value: ' + string1);
-      this.logger.log('  Second value: ' + string2);
+  public assertEquals(value1: any, value2: any, message: string): void {
+    this.assertTrue(value1 === value2, message);
+    if (value1 !== value2) {
+      this.logger.log('  First value: ' + value1);
+      this.logger.log('  Second value: ' + value2);
     }
   }
 
