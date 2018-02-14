@@ -22,7 +22,7 @@ class DashboardValidator {
 
       const widgetIds = dsb.dashboard.widgets.map((w) => w.id).sort();
 
-      if (JSON.parse(dsb.dashboard.layout)) {
+      if (dsb.dashboard.layout && JSON.parse(dsb.dashboard.layout)) {
         const layoutIds = [].concat.apply([], JSON.parse(dsb.dashboard.layout).contents.map((c) => c.widgets)).sort();
         errorTracker.assertEquals(JSON.stringify(layoutIds), JSON.stringify(widgetIds), 'Layout IDs match widget IDs');
       }
