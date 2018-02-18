@@ -1,4 +1,3 @@
 --ui mocha-typescript
 --require source-map-support/register
---recursive test
-js/bin/test.js
+--recursive js/test

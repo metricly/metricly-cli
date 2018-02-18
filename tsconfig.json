@@ -18,6 +18,7 @@
       "node"
   ],
   "include": [
-    "./ts/**/*.ts"
+    "./ts/**/*.ts",
+    "./test/*.ts"
   ]
 }

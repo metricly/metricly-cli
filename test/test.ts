@@ -1,4 +1,4 @@
-import assert from 'assert';
+import * as assert from 'assert';
 import { slow, suite, test, timeout } from 'mocha-typescript';
 
 @suite(timeout(3000), slow(1000))
