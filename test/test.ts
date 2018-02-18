@@ -1,9 +1,9 @@
-// Reference mocha-typescript's global definitions:
-/// <reference path="../node_modules/mocha-typescript/globals.d.ts" />
+import assert from 'assert';
 import { slow, suite, test, timeout } from 'mocha-typescript';
 
 @suite(timeout(3000), slow(1000))
 class Hello {
-    @test world() {
+    @test public world() {
+        assert(true);
     }
 }
