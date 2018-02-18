@@ -2,14 +2,17 @@
   "name": "metricly-cli",
   "version": "0.2.1",
   "description": "Metricly CLI",
-  "main": "js/index.js",
-  "types": "js/index.d.ts",
+  "main": "js/bin/metricly.js",
+  "types": "js/bin/metricly.d.ts",
   "scripts": {
     "compile": "tsc -p tsconfig.json",
     "lint": "tslint -p tslint.json",
-    "test": "yarn run lint",
+    "test": "nyc mocha",
+    "prepare": "tsc",
+    "pretest": "tsc",
     "prepublish": "yarn run compile && yarn run lint",
-    "package": "yarn run compile && pkg ."
+    "package": "yarn run compile && pkg .",
+    "watch": "mocha-typescript-watch"
   },
   "bin": {
     "metricly": "js/bin/metricly.js"
@@ -17,11 +20,15 @@
   "author": "TheConnMan",
   "license": "ISC",
   "dependencies": {
+    "@types/chai": "^4.1.2",
+    "@types/mocha": "^2.2.48",
     "caporal": "^0.9.0",
+    "chai": "^4.1.2",
     "chalk": "^2.3.0",
     "extend": "^3.0.1",
     "inquirer": "^3.2.1",
     "json-dup-key-validator": "^1.0.2",
+    "mocha": "^5.0.1",
     "request": "^2.81.0",
     "request-promise": "^4.2.1",
     "update-notifier": "^2.3.0"
@@ -33,10 +40,30 @@
     "@types/request": "^2.0.3",
     "@types/request-promise": "^4.1.37",
     "@types/update-notifier": "^1.0.2",
+    "mocha-typescript": "^1.1.12",
+    "nyc": "^11.4.1",
     "pkg": "^4.3.0-beta.5",
     "ts-node": "^3.3.0",
     "tslint": "^5.8.0",
     "typescript": "^2.5.2"
+  },
+  "nyc": {
+    "check-coverage": true,
+    "lines": 80,
+    "statements": 80,
+    "functions": 80,
+    "branches": 80,
+    "include": [
+      "src/**/*.js"
+    ],
+    "exclude": [
+      "test/**/*.js"
+    ],
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ],
+    "all": true
   },
   "publishConfig": {
     "access": "public"
