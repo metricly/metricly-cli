@@ -28,3 +28,11 @@ node js/bin/metricly.js
 npm install -g ts-node
 ts-node ts/bin/metricly.ts
 ```
+
+## Testing
+// run tests
+```npm test```
+// continuous testing
+```npm run watch```
+
+
