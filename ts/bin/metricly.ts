@@ -11,7 +11,7 @@ import PolicyCommands from '../commands/PolicyCommands';
 import ReportCommands from '../commands/ReportCommands';
 
 // tslint:disable-next-line:no-var-requires
-const pkg = require('../../package.json');
+const pkg = require('../../../package.json');
 
 const notifier = updateNotifier({ pkg });
 const update = notifier.update;

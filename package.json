@@ -2,8 +2,8 @@
   "name": "metricly-cli",
   "version": "0.2.1",
   "description": "Metricly CLI",
-  "main": "js/bin/metricly.js",
-  "types": "js/bin/metricly.d.ts",
+  "main": "js/index.js",
+  "types": "js/index.d.ts",
   "scripts": {
     "compile": "tsc -p tsconfig.json",
     "lint": "tslint -p tslint.json",
@@ -15,7 +15,7 @@
     "watch": "mocha-typescript-watch"
   },
   "bin": {
-    "metricly": "js/bin/metricly.js"
+    "metricly": "js/ts/bin/metricly.js"
   },
   "author": "TheConnMan",
   "license": "ISC",
