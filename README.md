@@ -31,8 +31,8 @@ ts-node ts/bin/metricly.ts
 
 ## Testing
 // run tests
-```npm test```
+```yarn test```
 // continuous testing
-```npm run watch```
+```yarn run watch```
 
 
