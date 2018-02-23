@@ -8,6 +8,9 @@
     "noLib": false,
     "preserveConstEnums": true,
     "declaration": true,
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "lib": [ "es6" ],
     "suppressImplicitAnyIndexErrors": true,
     "outDir": "./js"
   },

@@ -7,9 +7,10 @@
   "scripts": {
     "compile": "tsc -p tsconfig.json",
     "lint": "tslint -p tslint.json",
-    "test": "yarn run lint",
+    "test": "yarn run lint && nyc mocha",
     "prepublish": "yarn run compile && yarn run lint",
-    "package": "yarn run compile && pkg ."
+    "package": "yarn run compile && pkg .",
+    "watch": "mocha-typescript-watch"
   },
   "bin": {
     "metricly": "js/bin/metricly.js"
@@ -28,15 +29,39 @@
   },
   "devDependencies": {
     "@types/extend": "^2.0.30",
+    "@types/chai": "^4.1.2",
+    "@types/mocha": "^2.2.48",
     "@types/inquirer": "0.0.35",
     "@types/node": "^8.0.28",
     "@types/request": "^2.0.3",
     "@types/request-promise": "^4.1.37",
     "@types/update-notifier": "^1.0.2",
+    "chai": "^4.1.2",
+    "mocha": "^5.0.1",
+    "mocha-typescript": "^1.1.12",
+    "nyc": "^11.4.1",
     "pkg": "^4.3.0-beta.5",
     "ts-node": "^3.3.0",
     "tslint": "^5.8.0",
     "typescript": "^2.5.2"
+  },
+  "nyc": {
+    "check-coverage": true,
+    "lines": 80,
+    "statements": 80,
+    "functions": 80,
+    "branches": 80,
+    "include": [
+      "src/**/*.js"
+    ],
+    "exclude": [
+      "test/**/*.js"
+    ],
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ],
+    "all": true
   },
   "publishConfig": {
     "access": "public"
