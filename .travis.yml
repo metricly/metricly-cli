@@ -1,7 +1,9 @@
 language: node_js
 node_js:
 - '8'
-script: yarn run package
+script: 
+  - yarn run test
+  - yarn run package
 deploy:
   - provider: npm
     email: it@metricly.com
