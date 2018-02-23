@@ -8,14 +8,12 @@
     "compile": "tsc -p tsconfig.json",
     "lint": "tslint -p tslint.json",
     "test": "yarn run lint && nyc mocha",
-    "prepare": "yarn run compile",
-    "pretest": "yarn run compile",
     "prepublish": "yarn run compile && yarn run lint",
     "package": "yarn run compile && pkg .",
     "watch": "mocha-typescript-watch"
   },
   "bin": {
-    "metricly": "js/ts/bin/metricly.js"
+    "metricly": "js/bin/metricly.js"
   },
   "author": "TheConnMan",
   "license": "ISC",
