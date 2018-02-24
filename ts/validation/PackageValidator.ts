@@ -53,7 +53,7 @@ class PackageValidator {
       if (hasPolicies) {
         const policies = fs.readdirSync(path + '/policies/');
         // tslint:disable-next-line:max-line-length
-        errorTracker.assertEquals(policies.length.toString(), manifest.policies.length, 'Policy files are equal to the number of policies listed in package.json');
+        errorTracker.assertEquals(policies.length, manifest.policies.length, 'Policy files are equal to the number of policies listed in package.json');
 
         policies.forEach((policy) => {
           this.logger.log('  Policy: ' + policy);
@@ -68,7 +68,7 @@ class PackageValidator {
       if (hasAnalytics) {
         const analytics = fs.readdirSync(path + '/analyticConfigurations/');
         // tslint:disable-next-line:max-line-length
-        errorTracker.assertEquals(analytics.length.toString(), manifest.analyticConfigurations.length, 'Analytic files are equal to the number of analytics listed in package.json');
+        errorTracker.assertEquals(analytics.length, manifest.analyticConfigurations.length, 'Analytic files are equal to the number of analytics listed in package.json');
 
         analytics.forEach((analytic) => {
           this.logger.log('  Analytic: ' + analytic);

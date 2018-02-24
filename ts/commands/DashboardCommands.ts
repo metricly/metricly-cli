@@ -14,6 +14,7 @@ class DashboardCommands {
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
       .option('--profile', 'Metricly profile', /.*/, 'default')
+      .option('--format', 'output format: text, json', ['text', 'json'], 'text')
       .action((args, options, logger) => {
         const config = configService.mergeConfig(options);
         dashboardService.list(config, logger);
@@ -24,6 +25,7 @@ class DashboardCommands {
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
       .option('--profile', 'Metricly profile', /.*/, 'default')
+      .option('--format', 'output format: text, json', ['text', 'json'], 'text')
       .argument('<id>', 'Dashboard ID')
       .action((args, options, logger) => {
         const config = configService.mergeConfig(options);

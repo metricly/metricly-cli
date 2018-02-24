@@ -26,7 +26,7 @@ class ConfigCommands {
           name: 'password',
           type: 'password'
         }, {
-          default: profileConfig.endpoint || 'https://app.netuitive.com',
+          default: profileConfig.endpoint || 'https://app.metricly.com',
           message: 'Metricly Endpoint',
           name: 'endpoint',
           type: 'input'
