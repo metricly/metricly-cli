@@ -64,6 +64,29 @@ class PackageService {
     }
   }
 
+  public async installFromFile(file: string, config, logger): Promise<void> {
+    logger.info('\nThe following package ' + file + ' will be installed.');
+
+    logger.debug('\nUploading package ');
+    try {
+        const fd = {
+            file: fs.createReadStream(file)
+        };
+        const response = await request.post({
+            auth: {
+              pass: config.password,
+              user: config.username
+            },
+            formData: fd,
+            uri: config.endpoint + '/packages/install'
+        });
+
+        logger.info('Installed package from file: ' + file);
+    } catch (e) {
+        logger.error('There was an error installing the packages: ', e);
+    }
+  }
+
   public async uninstallById(id: string, config, logger): Promise<void> {
     logger.debug('\nUninstalling package ' + id);
     try {

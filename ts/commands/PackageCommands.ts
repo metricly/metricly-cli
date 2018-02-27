@@ -42,14 +42,19 @@ class PackageCommands {
       });
 
     (caporal as any)
-      .command('package install', 'Install a package from a Zip URL')
+      .command('package install', 'Install a package from a Zip URL or File')
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
       .option('--profile', 'Metricly profile', /.*/, 'default')
       .argument('<url>', 'Package Download URL')
+      .argument('<file>', 'Package File to install')
       .action((args, options, logger) => {
         const config = configService.mergeConfig(options);
-        packageService.installFromUrl(args.url, config, logger);
+        if (args.file) {
+          packageService.installFromFile(args.file, config, logger);
+        } else {
+          packageService.installFromUrl(args.url, config, logger);
+        }
       });
 
     (caporal as any)
