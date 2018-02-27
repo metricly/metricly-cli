@@ -46,14 +46,16 @@ class PackageCommands {
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
       .option('--profile', 'Metricly profile', /.*/, 'default')
-      .argument('<url>', 'Package Download URL')
-      .argument('<file>', 'Package File to install')
+      .argument('[url]', 'Package Download URL')
+      .argument('[file]', 'Package File to install')
       .action((args, options, logger) => {
         const config = configService.mergeConfig(options);
         if (args.file) {
           packageService.installFromFile(args.file, config, logger);
-        } else {
+        } else if (args.url) {
           packageService.installFromUrl(args.url, config, logger);
+        } else {
+          logger.error('url or file must be provided!');
         }
       });
 
