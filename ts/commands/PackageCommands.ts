@@ -1,4 +1,5 @@
 import * as caporal from 'caporal';
+import isUrl = require('is-url');
 import * as path from 'path';
 
 import ConfigService from '../services/ConfigService';
@@ -42,14 +43,18 @@ class PackageCommands {
       });
 
     (caporal as any)
-      .command('package install', 'Install a package from a Zip URL')
+      .command('package install', 'Install a package from a Zip URL or File')
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
       .option('--profile', 'Metricly profile', /.*/, 'default')
-      .argument('<url>', 'Package Download URL')
+      .argument('<url-or-file>', 'Package Download URL or file')
       .action((args, options, logger) => {
         const config = configService.mergeConfig(options);
-        packageService.installFromUrl(args.url, config, logger);
+        if (isUrl(args.urlOrFile)) {
+          packageService.installFromUrl(args.urlOrFile, config, logger);
+        } else {
+          packageService.installFromFile(args.urlOrFile, config, logger);
+        }
       });
 
     (caporal as any)
