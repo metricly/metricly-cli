@@ -45,7 +45,7 @@ class DashboardService {
       if (config.format === 'text') {
         logger.info(response.dashboard.name);
       }
-      if (config.options.format === 'json') {
+      if (config.format === 'json') {
         logger.info(JSON.stringify(response, null, 2));
       }
     } catch (e) {
