@@ -22,6 +22,14 @@ class PackageCommands {
       });
 
     (caporal as any)
+    .command('package create', 'Create a local pkg.zip')
+    .action((args, options, logger) => {
+      const location: string = path.resolve(process.cwd());
+      const config = configService.mergeConfig(options);
+      packageService.createArchive(location, config, logger);
+    });
+
+    (caporal as any)
       .command('package list', 'List installed packages')
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
