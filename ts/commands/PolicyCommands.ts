@@ -14,6 +14,7 @@ class PolicyCommands {
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
       .option('--profile', 'Metricly profile', /.*/, 'default')
+      .option('--format', 'output format: text, json', ['text', 'json'], 'text')
       .action((args, options, logger) => {
         const config = configService.mergeConfig(options);
         policyService.listAll(config, logger);
@@ -24,6 +25,7 @@ class PolicyCommands {
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
       .option('--profile', 'Metricly profile', /.*/, 'default')
+      .option('--format', 'output format: text, json', ['text', 'json'], 'text')
       .argument('<id>', 'Policy ID')
       .action((args, options, logger) => {
         const config = configService.mergeConfig(options);
