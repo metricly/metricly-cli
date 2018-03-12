@@ -15,11 +15,20 @@ class PackageCommands {
   public static addCommands() {
     (caporal as any)
       .command('package validate', 'Validate a local package')
-      .option('--location <location>', 'Path to package', /.*/, '.')
+      .option('--location <location>', 'Path to package, default is cwd', /.*/, '.')
       .action((args, options, logger) => {
         const location: string = path.resolve(process.cwd(), options.location);
         packageValidator.validate(location, require(location + '/package.json').id);
       });
+
+    (caporal as any)
+    .command('package create', 'Create a local pkg.zip')
+    .option('--location <location>', 'Path to save pkg.zip, default is cwd', /.*/, '.')
+    .action((args, options, logger) => {
+      const location: string = path.resolve(process.cwd(), options.location);
+      const config = configService.mergeConfig(options);
+      packageService.createArchive(location, config, logger);
+    });
 
     (caporal as any)
       .command('package list', 'List installed packages')
