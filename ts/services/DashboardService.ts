@@ -20,6 +20,7 @@ class DashboardService {
         logger.info(response.dashboards.sort((dsb1, dsb2) => {
           return dsb1.name.localeCompare(dsb2.name);
         }).map((dsb) => {
+          this.scrubDashboardKeys(dsb);
           return dsb.name + ' (ID: ' + dsb.id + ')';
         }));
       }
@@ -46,11 +47,26 @@ class DashboardService {
         logger.info(response.dashboard.name);
       }
       if (config.format === 'json') {
+        // remove some internal keys
+        this.scrubDashboardKeys(response.dashboard);
         logger.info(JSON.stringify(response, null, 2));
       }
     } catch (e) {
       logger.error('There was an error getting the dashboard: ' + e);
     }
+  }
+
+  private scrubDashboardKeys(dashboard) {
+    delete dashboard.id;
+    delete dashboard.userId;
+    delete dashboard.created;
+    delete dashboard.updated;
+    dashboard.widgets.forEach((entry) => {
+        delete entry.dashboardId;
+        delete entry.userId;
+        delete entry.created;
+        delete entry.updated;
+    });
   }
 }
 
