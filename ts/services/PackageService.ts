@@ -1,3 +1,4 @@
+import * as archiver from 'archiver';
 import * as fs from 'fs';
 import * as request from 'request-promise';
 
@@ -64,6 +65,29 @@ class PackageService {
     }
   }
 
+  public async installFromFile(file: string, config, logger): Promise<void> {
+    logger.info('\nThe following package ' + file + ' will be installed.');
+
+    logger.debug('\nUploading package ');
+    try {
+        const fd = {
+            file: fs.createReadStream(file)
+        };
+        const response = await request.post({
+            auth: {
+              pass: config.password,
+              user: config.username
+            },
+            formData: fd,
+            uri: config.endpoint + '/packages/install'
+        });
+
+        logger.info('Installed package from file: ' + file);
+    } catch (e) {
+        logger.error('There was an error installing the packages: ', e);
+    }
+  }
+
   public async uninstallById(id: string, config, logger): Promise<void> {
     logger.debug('\nUninstalling package ' + id);
     try {
@@ -78,6 +102,47 @@ class PackageService {
     } catch (e) {
       logger.error('There was an error uninstalling the package: ' + e);
     }
+  }
+
+  public async createArchive(location: string, config, logger): Promise<void> {
+    logger.debug('\nCreating archive package ');
+    const output = fs.createWriteStream(location + '/pkg.zip');
+    const archive = archiver('zip', {
+      zlib: { level: 9 } // Sets the compression level.
+    });
+
+    // listen for all archive data to be written
+    // 'close' event is fired only when a file descriptor is involved
+    output.on('close', () =>  {
+      logger.info(archive.pointer() + ' total bytes archived');
+    });
+
+    // This event is fired when the data source is drained no matter what was the data source.
+    // It is not part of this library but rather from the NodeJS Stream API.
+    // @see: https://nodejs.org/api/stream.html#stream_event_end
+    output.on('end', () => {
+      logger.debug('Data has been drained');
+    });
+
+    // good practice to catch warnings (ie stat failures and other non-blocking errors)
+    archive.on('warning', (err) =>  {
+      if (err.code === 'ENOENT') {
+        logger.warn(err);
+      } else {
+        // throw error
+        throw err;
+      }
+    });
+
+    // good practice to catch this error explicitly
+    archive.on('error', (err) =>  {
+      throw err;
+    });
+
+    // pipe archive data to the file
+    archive.pipe(output);
+    archive.directory(location, 'pkg-dir');
+    archive.finalize();
   }
 }
 

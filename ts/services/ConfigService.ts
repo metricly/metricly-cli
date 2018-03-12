@@ -11,7 +11,9 @@ class ConfigService {
 
   public mergeConfig(options) {
     const config = this.getConfig();
-    config[options.profile].password = EncryptionUtil.decrypt(config[options.profile].password);
+    if (config[options.profile]) {
+      config[options.profile].password = EncryptionUtil.decrypt(config[options.profile].password);
+    }
     return extend({}, config[options.profile], options);
   }
 

@@ -1,4 +1,5 @@
 import * as caporal from 'caporal';
+import isUrl = require('is-url');
 import * as path from 'path';
 
 import ConfigService from '../services/ConfigService';
@@ -14,11 +15,20 @@ class PackageCommands {
   public static addCommands() {
     (caporal as any)
       .command('package validate', 'Validate a local package')
-      .option('--location <location>', 'Path to package', /.*/, '.')
+      .option('--location <location>', 'Path to package, default is cwd', /.*/, '.')
       .action((args, options, logger) => {
         const location: string = path.resolve(process.cwd(), options.location);
         packageValidator.validate(location, require(location + '/package.json').id);
       });
+
+    (caporal as any)
+    .command('package create', 'Create a local pkg.zip')
+    .option('--location <location>', 'Path to save pkg.zip, default is cwd', /.*/, '.')
+    .action((args, options, logger) => {
+      const location: string = path.resolve(process.cwd(), options.location);
+      const config = configService.mergeConfig(options);
+      packageService.createArchive(location, config, logger);
+    });
 
     (caporal as any)
       .command('package list', 'List installed packages')
@@ -42,14 +52,18 @@ class PackageCommands {
       });
 
     (caporal as any)
-      .command('package install', 'Install a package from a Zip URL')
+      .command('package install', 'Install a package from a Zip URL or File')
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
       .option('--profile', 'Metricly profile', /.*/, 'default')
-      .argument('<url>', 'Package Download URL')
+      .argument('<url-or-file>', 'Package Download URL or file')
       .action((args, options, logger) => {
         const config = configService.mergeConfig(options);
-        packageService.installFromUrl(args.url, config, logger);
+        if (isUrl(args.urlOrFile)) {
+          packageService.installFromUrl(args.urlOrFile, config, logger);
+        } else {
+          packageService.installFromFile(args.urlOrFile, config, logger);
+        }
       });
 
     (caporal as any)
