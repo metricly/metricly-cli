@@ -16,7 +16,7 @@
     "metricly": "js/bin/metricly.js"
   },
   "author": "TheConnMan",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "dependencies": {
     "archiver": "^2.1.1",
     "caporal": "^0.9.0",
