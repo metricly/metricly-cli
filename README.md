@@ -66,25 +66,6 @@ metricly -h
 You can get verbose help on specific commands 
 - `metricly package list --help --verbose`
 
-### Package Commands
-- validate
-- create
-- list
-- get <id>
-- install <url-or-file>
-- uninstall <id>
-
-### Policy Commands
-- list
-- get <id>
-
-### Dashboard Commands
-- list
-- get <id>
-
-### Report Commands
-- list
-
 ## Development
 
 ```
