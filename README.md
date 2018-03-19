@@ -9,12 +9,7 @@ Table of Contents
     - [NPM](#npm)
 - [Profiles](#profiles)
 - [Formats](#formats)
-- [Commands](#commands)
-    - [Help](#help)
-    - [Package Commands](#package-commands)
-    - [Policy Commands](#policy-commands)
-    - [Dashboard Commands](#dashboard-commands)
-    - [Report Commands](#report-commands)
+- [Help](#help)
 - [Development ](#development)
 - [Testing](#testing)
 
