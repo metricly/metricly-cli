@@ -21,6 +21,9 @@ class DashboardValidator {
       const dsb = JSON.parse(json);
 
       const widgetIds = dsb.dashboard.widgets.map((w) => w.id).sort();
+      const widgetNames = dsb.dashboard.widgets.map((w) => w.name).sort();
+
+      errorTracker.assertTrue([...new Set(widgetNames)].length === widgetIds.length, 'No duplicate widget names');
 
       if (dsb.dashboard.layout && JSON.parse(dsb.dashboard.layout)) {
         const layoutIds = [].concat.apply([], JSON.parse(dsb.dashboard.layout).contents.map((c) => c.widgets)).sort();
