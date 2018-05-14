@@ -31,6 +31,40 @@ class PolicyCommands {
         const config = configService.mergeConfig(options);
         policyService.getById(args.id, config, logger);
       });
+
+    (caporal as any)
+      .command('policy create', 'Create a new policy from a local JSON file')
+      .option('--username', 'Metricly Username')
+      .option('--password', 'Metricly Password')
+      .option('--profile', 'Metricly profile', /.*/, 'default')
+      .argument('<file>', 'JSON policy file location')
+      .action((args, options, logger) => {
+        const config = configService.mergeConfig(options);
+        policyService.create(args.file, config, logger);
+      });
+
+    (caporal as any)
+      .command('policy update', 'Update a policy from a local JSON file')
+      .option('--username', 'Metricly Username')
+      .option('--password', 'Metricly Password')
+      .option('--profile', 'Metricly profile', /.*/, 'default')
+      .argument('<id>', 'Policy ID')
+      .argument('<file>', 'JSON policy file location')
+      .action((args, options, logger) => {
+        const config = configService.mergeConfig(options);
+        policyService.update(args.id, args.file, config, logger);
+      });
+
+    (caporal as any)
+      .command('policy delete', 'Delete a policy by ID')
+      .option('--username', 'Metricly Username')
+      .option('--password', 'Metricly Password')
+      .option('--profile', 'Metricly profile', /.*/, 'default')
+      .argument('<id>', 'Policy ID')
+      .action((args, options, logger) => {
+        const config = configService.mergeConfig(options);
+        policyService.deleteById(args.id, config, logger);
+      });
   }
 }
 
