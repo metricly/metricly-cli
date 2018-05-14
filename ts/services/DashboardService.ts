@@ -52,6 +52,61 @@ class DashboardService {
       logger.error('There was an error getting the dashboard: ' + e);
     }
   }
+
+  public async create(file: string, config, logger): Promise<void> {
+    logger.debug('\nCreating dashboard');
+    try {
+      const dashboard = JSON.parse(fs.readFileSync(file, 'utf-8'));
+      const response = await request({
+        auth: {
+          pass: config.password,
+          user: config.username
+        },
+        body: dashboard,
+        json: true,
+        method: 'POST',
+        uri: config.endpoint + '/dashboards'
+      });
+    } catch (e) {
+      logger.error('There was an error creating the dashboard: ' + e);
+    }
+  }
+
+  public async update(id: string, file: string, config, logger): Promise<void> {
+    logger.debug('\nUpdating dashboard ' + id);
+    try {
+      const dashboard = JSON.parse(fs.readFileSync(file, 'utf-8'));
+      const response = await request({
+        auth: {
+          pass: config.password,
+          user: config.username
+        },
+        body: dashboard,
+        json: true,
+        method: 'PUT',
+        uri: config.endpoint + '/dashboards/' + id
+      });
+    } catch (e) {
+      logger.error('There was an error updating the dashboard: ' + e);
+    }
+  }
+
+  public async deleteById(id: string, config, logger): Promise<void> {
+    logger.debug('\nDeleting dashboard ' + id);
+    try {
+      const response = await request({
+        auth: {
+          pass: config.password,
+          user: config.username
+        },
+        json: true,
+        method: 'DELETE',
+        uri: config.endpoint + '/dashboards/' + id
+      });
+    } catch (e) {
+      logger.error('There was an error deleting the dashboard: ' + e);
+    }
+  }
 }
 
 export default DashboardService;

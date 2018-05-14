@@ -31,6 +31,40 @@ class DashboardCommands {
         const config = configService.mergeConfig(options);
         dashboardService.getById(args.id, config, logger);
       });
+
+    (caporal as any)
+      .command('dashboard create', 'Create a new dashboard from a local JSON file')
+      .option('--username', 'Metricly Username')
+      .option('--password', 'Metricly Password')
+      .option('--profile', 'Metricly profile', /.*/, 'default')
+      .argument('<file>', 'JSON dashboard file location')
+      .action((args, options, logger) => {
+        const config = configService.mergeConfig(options);
+        dashboardService.create(args.file, config, logger);
+      });
+
+    (caporal as any)
+      .command('dashboard update', 'Update a dashboard from a local JSON file')
+      .option('--username', 'Metricly Username')
+      .option('--password', 'Metricly Password')
+      .option('--profile', 'Metricly profile', /.*/, 'default')
+      .argument('<id>', 'Dashboard ID')
+      .argument('<file>', 'JSON dashboard file location')
+      .action((args, options, logger) => {
+        const config = configService.mergeConfig(options);
+        dashboardService.update(args.id, args.file, config, logger);
+      });
+
+    (caporal as any)
+      .command('dashboard delete', 'Delete a dashboard by ID')
+      .option('--username', 'Metricly Username')
+      .option('--password', 'Metricly Password')
+      .option('--profile', 'Metricly profile', /.*/, 'default')
+      .argument('<id>', 'Dashboard ID')
+      .action((args, options, logger) => {
+        const config = configService.mergeConfig(options);
+        dashboardService.deleteById(args.id, config, logger);
+      });
   }
 }
 
