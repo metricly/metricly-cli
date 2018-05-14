@@ -1,6 +1,6 @@
 {
   "name": "metricly-cli",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Metricly CLI",
   "main": "js/index.js",
   "types": "js/index.d.ts",
@@ -16,7 +16,7 @@
     "metricly": "js/bin/metricly.js"
   },
   "author": "TheConnMan",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "dependencies": {
     "archiver": "^2.1.1",
     "caporal": "^0.9.0",
@@ -45,7 +45,7 @@
     "nyc": "^11.4.1",
     "pkg": "^4.3.0-beta.5",
     "ts-node": "^3.3.0",
-    "tslint": "^5.8.0",
+    "tslint": "~5.8.0",
     "typescript": "^2.5.2"
   },
   "nyc": {
