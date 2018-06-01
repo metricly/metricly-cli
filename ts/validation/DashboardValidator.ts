@@ -34,12 +34,21 @@ class DashboardValidator {
       errorTracker.assertTrue(contents, 'Has gridstack contents');
 
       if (contents) {
-        const gridstack = JSON.parse(contents);
-        errorTracker.assertTrue(true, 'Gridstack content is valid JSON');
+        const validGridstackJsonMessage = 'Gridstack content is valid JSON';
+        try {
+          const gridstack = JSON.parse(contents);
+          errorTracker.assertTrue(true, validGridstackJsonMessage);
 
-        const gridstackIds = gridstack.map((g) => g.id).sort();
-        // tslint:disable-next-line:max-line-length
-        errorTracker.assertEquals(JSON.stringify(gridstackIds), JSON.stringify(widgetIds), 'Gridstack layout contents match widget IDs');
+          const gridstackIds = gridstack.map((g) => g.id).sort();
+          // tslint:disable-next-line:max-line-length
+          errorTracker.assertEquals(JSON.stringify(gridstackIds), JSON.stringify(widgetIds), 'Gridstack layout contents match widget IDs');
+        } catch (e) {
+          if (e.name === 'SyntaxError') {
+            errorTracker.assertTrue(false, validGridstackJsonMessage);
+          } else {
+            throw e;
+          }
+        }
       }
     } catch (err) {
       errorTracker.log('Error: ' + err);
