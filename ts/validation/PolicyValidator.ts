@@ -12,15 +12,15 @@ class PolicyValidator {
   public validate(policyList: any[], location: string, policy: string): string[] {
     const errorTracker = new ErrorTracker(policy, this.indent);
 
+    const validJsonMessage = 'Policy is valid JSON';
     try {
       const json = fs.readFileSync(location + policy, 'utf8');
-      const jsonParseError = jsonValidator.validate(json, false);
-
-      errorTracker.assertTrue(!jsonParseError, 'No duplicate object keys');
 
       const pol = JSON.parse(json);
+      errorTracker.assertTrue(true, validJsonMessage);
 
-      errorTracker.assertTrue(true, 'Policy is valid JSON');
+      const jsonParseError = jsonValidator.validate(json, false);
+      errorTracker.assertTrue(!jsonParseError, 'No duplicate object keys');
 
       const stringElementType = pol.policy.scope.elementType && typeof pol.policy.scope.elementType === 'string';
       const arrayElementTypes = pol.policy.scope.elementTypes && Array.isArray(pol.policy.scope.elementTypes);
@@ -29,7 +29,11 @@ class PolicyValidator {
       const policies = policyList.filter((policyItem) => policyItem.data.file === 'policies/' + policy);
       errorTracker.assertTrue(policies.length === 1, 'Policy found in package.json list');
     } catch (err) {
-      errorTracker.log('Error: ' + err);
+      if (err.name === 'SyntaxError') {
+        errorTracker.assertTrue(false, validJsonMessage);
+      } else {
+        errorTracker.log(err);
+      }
     }
     return errorTracker.getErrors();
   }
