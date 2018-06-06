@@ -12,13 +12,15 @@ class DashboardValidator {
   public validate(location: string, dashboard: string): string[] {
     const errorTracker = new ErrorTracker(dashboard, this.indent);
 
+    const validJsonMessage = 'Dashboard is valid JSON';
     try {
       const json = fs.readFileSync(location + dashboard, 'utf8');
-      const jsonParseError = jsonValidator.validate(json, false);
-
-      errorTracker.assertTrue(!jsonParseError, 'No duplicate object keys');
 
       const dsb = JSON.parse(json);
+      errorTracker.assertTrue(true, validJsonMessage);
+
+      const jsonParseError = jsonValidator.validate(json, false);
+      errorTracker.assertTrue(!jsonParseError, 'No duplicate object keys');
 
       const widgetIds = dsb.dashboard.widgets.map((w) => w.id).sort();
       const widgetNames = dsb.dashboard.widgets.map((w) => w.name).sort();
@@ -34,15 +36,28 @@ class DashboardValidator {
       errorTracker.assertTrue(contents, 'Has gridstack contents');
 
       if (contents) {
-        const gridstack = JSON.parse(contents);
-        errorTracker.assertTrue(true, 'Gridstack content is valid JSON');
+        const validGridstackJsonMessage = 'Gridstack content is valid JSON';
+        try {
+          const gridstack = JSON.parse(contents);
+          errorTracker.assertTrue(true, validGridstackJsonMessage);
 
-        const gridstackIds = gridstack.map((g) => g.id).sort();
-        // tslint:disable-next-line:max-line-length
-        errorTracker.assertEquals(JSON.stringify(gridstackIds), JSON.stringify(widgetIds), 'Gridstack layout contents match widget IDs');
+          const gridstackIds = gridstack.map((g) => g.id).sort();
+          // tslint:disable-next-line:max-line-length
+          errorTracker.assertEquals(JSON.stringify(gridstackIds), JSON.stringify(widgetIds), 'Gridstack layout contents match widget IDs');
+        } catch (e) {
+          if (e.name === 'SyntaxError') {
+            errorTracker.assertTrue(false, validGridstackJsonMessage);
+          } else {
+            throw e;
+          }
+        }
       }
     } catch (err) {
-      errorTracker.log('Error: ' + err);
+      if (err.name === 'SyntaxError') {
+        errorTracker.assertTrue(false, validJsonMessage);
+      } else {
+        errorTracker.log(err);
+      }
     }
     return errorTracker.getErrors();
   }
