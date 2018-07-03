@@ -9,6 +9,7 @@ import DashboardCommands from '../commands/DashboardCommands';
 import PackageCommands from '../commands/PackageCommands';
 import PolicyCommands from '../commands/PolicyCommands';
 import ReportCommands from '../commands/ReportCommands';
+import ElementCommands from '../commands/ElementCommands';
 
 // tslint:disable-next-line:no-var-requires
 const pkg = require('../../package.json');
@@ -36,5 +37,6 @@ PackageCommands.addCommands();
 PolicyCommands.addCommands();
 DashboardCommands.addCommands();
 ReportCommands.addCommands();
+ElementCommands.addCommands();
 
 (caporal as any).parse(process.argv);
