@@ -6,10 +6,10 @@ import * as updateNotifier from 'update-notifier';
 
 import ConfigCommands from '../commands/ConfigCommands';
 import DashboardCommands from '../commands/DashboardCommands';
+import ElementCommands from '../commands/ElementCommands';
 import PackageCommands from '../commands/PackageCommands';
 import PolicyCommands from '../commands/PolicyCommands';
 import ReportCommands from '../commands/ReportCommands';
-import ElementCommands from '../commands/ElementCommands';
 
 // tslint:disable-next-line:no-var-requires
 const pkg = require('../../package.json');
