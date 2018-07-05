@@ -18,7 +18,7 @@ class ElementCommands {
       .option('--format', 'output format: text, json', ['text', 'json'], 'text')
       .action((args, options, logger) => {
         const config = configService.mergeConfig(options);
-        elementService.lsMaintenceMode(config, logger);
+        elementService.lsMaintenanceMode(config, logger);
       });
 
     (caporal as any)
