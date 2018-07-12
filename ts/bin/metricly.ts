@@ -6,6 +6,7 @@ import * as updateNotifier from 'update-notifier';
 
 import ConfigCommands from '../commands/ConfigCommands';
 import DashboardCommands from '../commands/DashboardCommands';
+import ElementCommands from '../commands/ElementCommands';
 import PackageCommands from '../commands/PackageCommands';
 import PolicyCommands from '../commands/PolicyCommands';
 import ReportCommands from '../commands/ReportCommands';
@@ -36,5 +37,6 @@ PackageCommands.addCommands();
 PolicyCommands.addCommands();
 DashboardCommands.addCommands();
 ReportCommands.addCommands();
+ElementCommands.addCommands();
 
 (caporal as any).parse(process.argv);
