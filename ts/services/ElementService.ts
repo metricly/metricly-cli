@@ -1,5 +1,6 @@
 import * as Bluebird from 'bluebird';
 import * as fs from 'fs';
+import * as moment from 'moment';
 import * as request from 'request-promise';
 
 const MAINT_TAG_NAME = 'n.state.maintenance';
@@ -226,6 +227,7 @@ class ElementService {
         user: config.username
       },
       body: {
+        endDate: moment().format(),
         page: queryPage,
         pageSize: queryPageSize,
         sort: {
@@ -235,7 +237,8 @@ class ElementService {
         },
         sourceFilter: {
           excludes: ['metrics']
-        }
+        },
+        startDate: moment().subtract(1, 'd').format()
       },
       json: true,
       method: 'POST',
