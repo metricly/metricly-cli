@@ -11,36 +11,13 @@ class ElementService {
   public async lsMaintenanceMode(config, logger): Promise<void> {
     logger.info('\nListing elements in maintenance mode');
     try {
-      const response = await request({
-        auth: {
-          pass: config.password,
-          user: config.username
-        },
-        body: {
-          elementTags: {
-            and: true,
-            items: [{
-              contains: true,
-              key: MAINT_TAG_NAME,
-              literal: true,
-              value: 'true'
-            }]
-          },
-          page: 0,
-          pageSize: 50,
-          sort: {
-            field: 'name',
-            missing: '_last',
-            order: 'asc'
-          },
-          sourceFilter: {
-            excludes: ['metrics']
-          }
-        },
-        json: true,
-        method: 'POST',
-        uri: `${config.endpoint}/elements/elasticsearch/elementQuery`
-      });
+      const requestBody = this.buildBaseElementQuery(config);
+      const elementTags = 'elementTags';
+      requestBody.body[elementTags] = this.buildKeyValueQueryTerm(MAINT_TAG_NAME, 'true');
+
+      logger.debug(JSON.stringify(requestBody, null, 2));
+
+      const response = await request(requestBody);
       if (config.format === 'text') {
         logger.info(response.page.content.map((el) => {
           const endEpoch = el.netuitiveTags[MAINT_END_TAG_NAME];
@@ -177,6 +154,116 @@ class ElementService {
       uri
     });
     return response;
+  }
+
+  public async elementSearch(config, logger): Promise<void> {
+
+    // base query
+    const requestBody = this.buildBaseElementQuery(config);
+
+    // add name term
+    if (typeof config.name !== 'undefined') {
+      const field = 'elementNames';
+      requestBody.body[field] = this.buildValueQueryTerm(config.name, true, false);
+    }
+    // add type term
+    if (typeof config.type !== 'undefined') {
+      const field = 'elementTypes';
+      requestBody.body[field] = this.buildValueQueryTerm(config.type, true, true);
+    }
+    // add attributes term
+    if (typeof config.attribute !== 'undefined') {
+      const attrKey = config.attribute.split('=')[0];
+      const attrVal = config.attribute.split('=')[1];
+
+      const field = 'attributes';
+      requestBody.body[field] = this.buildKeyValueQueryTerm(attrKey, attrVal);
+    }
+    // add elementTags term
+    if (typeof config.tag !== 'undefined') {
+      const tagKey = config.tag.split('=')[0];
+      const tagVal = config.tag.split('=')[1];
+
+      const field = 'elementTags';
+      requestBody.body[field] = this.buildKeyValueQueryTerm(tagKey, tagVal);
+    }
+    // add collectors term
+    if (typeof config.collector !== 'undefined') {
+      const field = 'collectorNames';
+      requestBody.body[field] = this.buildValueQueryTerm(config.collector, true, true);
+    }
+
+    logger.debug(JSON.stringify(requestBody, null, 2));
+
+    try {
+      const response = await request(requestBody);
+      if (config.format === 'text') {
+        logger.info(`###########################################################################`);
+        logger.info('## Element Search');
+        logger.info(`##  Page Size [${response.page.size}]`);
+        logger.info(`##  Page Number [${response.page.number} of ${response.page.totalPages - 1}]`);
+        logger.info(`##  Total Elements [${response.page.totalElements}]`);
+        logger.info(`###########################################################################`);
+        logger.info(response.page.content.map((el) => {
+          return `name[${el.name}] id[${el.id}] fqn[${el.fqn}] type[${el.type}]`;
+        }));
+      }
+      if (config.format === 'json') {
+        logger.info(JSON.stringify(response, null, 2));
+      }
+    } catch (e) {
+      logger.error('There was an error listing the elements: ' + e);
+    }
+  }
+
+  public buildBaseElementQuery(config) {
+    const queryPage = config.page ? config.page : 0;
+    const queryPageSize = config.pageSize ? config.pageSize : 35;
+
+    return {
+      auth: {
+        pass: config.password,
+        user: config.username
+      },
+      body: {
+        page: queryPage,
+        pageSize: queryPageSize,
+        sort: {
+          field: 'name',
+          missing: '_last',
+          order: 'asc'
+        },
+        sourceFilter: {
+          excludes: ['metrics']
+        }
+      },
+      json: true,
+      method: 'POST',
+      uri: `${config.endpoint}/elements/elasticsearch/elementQuery`
+    };
+  }
+
+  public buildValueQueryTerm(value: string, queryContains = true, queryLiteral = false) {
+    return {
+      and: false,
+      items: [{
+        contains: queryContains,
+        item: value,
+        literal: queryLiteral
+      }]
+    };
+  }
+
+  public buildKeyValueQueryTerm(queryKey: string, queryVal: string) {
+    return {
+      and: true,
+      items: [{
+        contains: true,
+        key: queryKey,
+        literal: true,
+        value: queryVal
+      }]
+    };
   }
 
 }
