@@ -69,8 +69,7 @@ class ElementService {
     } else {
       endEpoch = new Date().getTime() + (config.hours * MS_IN_HOUR);
       endDate = (new Date( endEpoch )).toUTCString();
-      const msg = `Start maintenance mode on Element ${id}) with duration ${config.hours} hours until ${endDate}`;
-      logger.info(msg);
+      logger.info(`Start maintenance mode on Element ${id}) with duration ${config.hours} hours until ${endDate}`);
     }
 
     try {
