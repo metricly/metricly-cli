@@ -163,17 +163,17 @@ class ElementService {
     const requestBody = this.buildBaseElementQuery(config);
 
     // add name term
-    if (typeof config.name !== 'undefined') {
+    if (config.name) {
       const field = 'elementNames';
       requestBody.body[field] = this.buildValueQueryTerm(config.name, true, false);
     }
     // add type term
-    if (typeof config.type !== 'undefined') {
+    if (config.type) {
       const field = 'elementTypes';
       requestBody.body[field] = this.buildValueQueryTerm(config.type, true, true);
     }
     // add attributes term
-    if (typeof config.attribute !== 'undefined') {
+    if (config.attribute) {
       const attrKey = config.attribute.split('=')[0];
       const attrVal = config.attribute.split('=')[1];
 
@@ -181,7 +181,7 @@ class ElementService {
       requestBody.body[field] = this.buildKeyValueQueryTerm(attrKey, attrVal);
     }
     // add elementTags term
-    if (typeof config.tag !== 'undefined') {
+    if (config.tag) {
       const tagKey = config.tag.split('=')[0];
       const tagVal = config.tag.split('=')[1];
 
@@ -189,7 +189,7 @@ class ElementService {
       requestBody.body[field] = this.buildKeyValueQueryTerm(tagKey, tagVal);
     }
     // add collectors term
-    if (typeof config.collector !== 'undefined') {
+    if (config.collector) {
       const field = 'collectorNames';
       requestBody.body[field] = this.buildValueQueryTerm(config.collector, true, true);
     }
@@ -199,18 +199,17 @@ class ElementService {
     try {
       const response = await request(requestBody);
       if (config.format === 'text') {
-        logger.info(`###########################################################################`);
         logger.info('## Element Search');
         logger.info(`##  Page Size [${response.page.size}]`);
         logger.info(`##  Page Number [${response.page.number} of ${response.page.totalPages - 1}]`);
         logger.info(`##  Total Elements [${response.page.totalElements}]`);
-        logger.info(`###########################################################################`);
-        logger.info(response.page.content.map((el) => {
-          return `name[${el.name}] id[${el.id}] fqn[${el.fqn}] type[${el.type}]`;
-        }));
+        logger.info('\nname, id, fqn, type');
+        response.page.content.forEach((el) => {
+          logger.info(`${el.name}, ${el.id}, ${el.fqn}, ${el.type}`);
+        });
       }
       if (config.format === 'json') {
-        logger.info(JSON.stringify(response, null, 2));
+        logger.info(JSON.stringify(response.page.content, null, 2));
       }
     } catch (e) {
       logger.error('There was an error listing the elements: ' + e);
@@ -218,8 +217,8 @@ class ElementService {
   }
 
   public buildBaseElementQuery(config) {
-    const queryPage = config.page ? config.page : 0;
-    const queryPageSize = config.pageSize ? config.pageSize : 35;
+    const queryPage = config.page || 0;
+    const queryPageSize = config.pageSize || 35;
 
     return {
       auth: {
@@ -230,11 +229,6 @@ class ElementService {
         endDate: moment().format(),
         page: queryPage,
         pageSize: queryPageSize,
-        sort: {
-          field: 'name',
-          missing: '_last',
-          order: 'asc'
-        },
         sourceFilter: {
           excludes: ['metrics']
         },
