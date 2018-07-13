@@ -2,6 +2,7 @@ import * as Bluebird from 'bluebird';
 import * as fs from 'fs';
 import * as moment from 'moment';
 import * as request from 'request-promise';
+import * as Table from 'tty-table';
 
 const MAINT_TAG_NAME = 'n.state.maintenance';
 const MAINT_END_TAG_NAME = 'n.state.maintenance_end';
@@ -199,14 +200,26 @@ class ElementService {
     try {
       const response = await request(requestBody);
       if (config.format === 'text') {
-        logger.info('## Element Search');
-        logger.info(`##  Page Size [${response.page.size}]`);
-        logger.info(`##  Page Number [${response.page.number} of ${response.page.totalPages - 1}]`);
-        logger.info(`##  Total Elements [${response.page.totalElements}]`);
-        logger.info('\nname, id, fqn, type');
+
+        const header = [{value: 'name'}, {value: 'type'}, {value: 'id'}, {value: 'fqn'}];
+
+        const rows = [];
         response.page.content.forEach((el) => {
-          logger.info(`${el.name}, ${el.id}, ${el.fqn}, ${el.type}`);
+          rows.push([el.name, el.type, el.id, el.fqn]);
         });
+
+        const table = Table(header, rows, {
+          align : 'left',
+          borderStyle : 1,
+          color : 'white',
+          headerAlign : 'left'
+        });
+
+        logger.info(table.render());
+        let summary = `Page Size [${response.page.size}] - `;
+        summary += `Page Number [${response.page.number} of ${response.page.totalPages - 1}] - `;
+        summary += `Total Elements [${response.page.totalElements}]`;
+        logger.info(`\t\t${summary}\n`);
       }
       if (config.format === 'json') {
         logger.info(JSON.stringify(response.page.content, null, 2));
@@ -229,6 +242,11 @@ class ElementService {
         endDate: moment().format(),
         page: queryPage,
         pageSize: queryPageSize,
+        sort: {
+          field: 'name',
+          missing: '_last',
+          order: 'asc'
+        },
         sourceFilter: {
           excludes: ['metrics']
         },
