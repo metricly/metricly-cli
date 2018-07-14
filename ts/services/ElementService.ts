@@ -244,7 +244,6 @@ class ElementService {
         pageSize: queryPageSize,
         sort: {
           field: 'name',
-          missing: '_last',
           order: 'asc'
         },
         sourceFilter: {
