@@ -11,6 +11,24 @@ class ElementCommands {
   public static addCommands() {
 
     (caporal as any)
+      .command('element search', 'Search for Elements')
+      .option('--username', 'Metricly Username')
+      .option('--password', 'Metricly Password')
+      .option('--profile', 'Metricly profile', /.*/, 'default')
+      .option('--format', 'output format: text, json', ['text', 'json'], 'text')
+      .option('--name', 'Name contains')
+      .option('--type', 'Element type')
+      .option('--attribute', 'Element attribute KEY=VALUE')
+      .option('--tag', 'Element tag KEY=VALUE')
+      .option('--collector', 'Datasource collector')
+      .option('--page', 'Page number of paginated results')
+      .option('--pageSize', 'Page size of paginated results')
+      .action((args, options, logger) => {
+        const config = configService.mergeConfig(options);
+        elementService.elementSearch(config, logger);
+      });
+
+    (caporal as any)
       .command('maintenance list', 'List elements in maintenance mode')
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
