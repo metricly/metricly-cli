@@ -31,6 +31,15 @@ class PackageCommands {
     });
 
     (caporal as any)
+      .command('package format', 'Format the package')
+      .option('--location <location>', 'Path to the package directory, default is cwd', /.*/, '.')
+      .action((args, options, logger) => {
+        const location: string = path.resolve(process.cwd(), options.location);
+        const config = configService.mergeConfig(options);
+        packageService.format(location, config, logger);
+      });
+
+    (caporal as any)
       .command('package list', 'List installed packages')
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')

@@ -1,8 +1,12 @@
 import * as archiver from 'archiver';
+import * as clean from 'clean-deep';
 import * as fs from 'fs';
+import * as stringify from 'json-stable-stringify';
 import * as request from 'request-promise';
 
 class PackageService {
+
+  private static PACKAGE_DIRECTORIES = ['dashboards', 'policies', 'analyticConfigurations'];
 
   public async listInstalled(config, logger): Promise<void> {
     logger.debug('\nListing installed packages');
@@ -143,6 +147,21 @@ class PackageService {
     archive.pipe(output);
     archive.directory(location, 'pkg-dir');
     archive.finalize();
+  }
+
+  public format(location: string, config, logger): void {
+    PackageService.PACKAGE_DIRECTORIES.filter((dir) => {
+      return fs.existsSync(`${location}/${dir}`);
+    }).forEach((dir) => {
+      fs.readdirSync(`${location}/${dir}`).forEach((file) => {
+        logger.debug(`Formatting file ${location}/${dir}/${file}`);
+        const contents = JSON.parse(fs.readFileSync(`${location}/${dir}/${file}`, 'UTF8').replace(/\"\[\]\"/g, '""'));
+        fs.writeFileSync(`${location}/${dir}/${file}`, stringify(clean(contents), {
+          space: 2
+        }));
+      });
+    });
+    logger.info(`Done formatting the package at ${location}`);
   }
 }
 
