@@ -155,13 +155,33 @@ class PackageService {
     }).forEach((dir) => {
       fs.readdirSync(`${location}/${dir}`).forEach((file) => {
         logger.debug(`Formatting file ${location}/${dir}/${file}`);
-        const contents = JSON.parse(fs.readFileSync(`${location}/${dir}/${file}`, 'UTF8').replace(/\"\[\]\"/g, '""'));
-        fs.writeFileSync(`${location}/${dir}/${file}`, stringify(clean(contents), {
-          space: 2
-        }));
+        const contents = fs.readFileSync(`${location}/${dir}/${file}`, 'UTF8');
+        fs.writeFileSync(`${location}/${dir}/${file}`, this.formatContent(contents));
       });
     });
     logger.info(`Done formatting the package at ${location}`);
+  }
+
+  public lint(location: string, config, logger): string[] {
+    const errors: string[] = [];
+    PackageService.PACKAGE_DIRECTORIES.filter((dir) => {
+      return fs.existsSync(`${location}/${dir}`);
+    }).forEach((dir) => {
+      fs.readdirSync(`${location}/${dir}`).forEach((file) => {
+        logger.debug(`Linting file ${location}/${dir}/${file}`);
+        const contents = fs.readFileSync(`${location}/${dir}/${file}`, 'UTF8');
+        if (contents !== this.formatContent(contents)) {
+          errors.push(`${dir}/${file}`);
+        }
+      });
+    });
+    return errors;
+  }
+
+  private formatContent(content: string): string {
+    return stringify(clean(JSON.parse(content.replace(/\"\[\]\"/g, '""'))), {
+      space: 2
+    });
   }
 }
 
