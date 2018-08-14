@@ -11,7 +11,7 @@ class SampleCommands {
   public static addCommands() {
 
     (caporal as any)
-      .command('metric results', 'List elements in maintenance mode')
+      .command('metric results', 'Sample data when you have the Element and Metric IDs')
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
       .option('--profile', 'Metricly profile', /.*/, 'default')
