@@ -2,7 +2,6 @@ import * as Bluebird from 'bluebird';
 import * as fs from 'fs';
 import * as moment from 'moment';
 import * as request from 'request-promise';
-import * as ss from 'simple-statistics';
 import * as Table from 'tty-table';
 
 import {ElasticSearchQuery, ElasticSearchQueryList, ElasticSearchQueryMap, ElasticSearchSortField, ElasticSearchSourceFilter, Page} from '../model/ElasticSearchQuery';

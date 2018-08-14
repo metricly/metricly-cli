@@ -6,7 +6,7 @@ import SampleService from '../services/SampleService';
 const configService = new ConfigService();
 const sampleService = new SampleService();
 
-class ElementCommands {
+class SampleCommands {
 
   public static addCommands() {
 
@@ -52,4 +52,4 @@ class ElementCommands {
   }
 }
 
-export default ElementCommands;
+export default SampleCommands;
