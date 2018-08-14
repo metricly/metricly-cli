@@ -1,5 +1,3 @@
-import * as Bluebird from 'bluebird';
-import * as fs from 'fs';
 import * as moment from 'moment';
 import * as request from 'request-promise';
 import * as Table from 'tty-table';
@@ -12,7 +10,7 @@ class SampleService {
     public async getSamples(elementId, metricId, config, logger): Promise<void> {
         try {
             const queryUri = this.buildSampleUri(elementId, metricId, config, logger);
-            logger.info(`Running Query: ${queryUri}`);
+            logger.debug(`Running Query: ${queryUri}`);
 
             const response = await request({
                 auth: {
@@ -96,12 +94,9 @@ class SampleService {
 
             const metricRequest = this.buildRequest(config, queryBody, 'metrics/elasticsearch/metricQuery');
             const metricResponse = await request(metricRequest);
-            if (config.excessivelogging) {
-                logger.info('METRIC REQUEST');
-                logger.info(JSON.stringify(metricRequest, null, 2));
-                logger.info('METRIC RESPONSE');
-                logger.info(JSON.stringify(metricResponse, null, 2));
-            }
+            logger.debug('METRIC REQUEST: ' + JSON.stringify(metricRequest, null, 2));
+            logger.debug('METRIC RESPONSE: ' + JSON.stringify(metricResponse, null, 2));
+
             const rows = [];
 
             for (const el of metricResponse.page.content) {
@@ -124,12 +119,9 @@ class SampleService {
                     uri: `${config.endpoint}/elements/elasticsearch/elementQuery`
                 });
                 const element = {id: elementResponse.page.content[0].id, name: elementResponse.page.content[0].name, type: elementResponse.page.content[0].type};
-                if (config.excessivelogging) {
-                    logger.info('ELEMENT REQUEST');
-                    logger.info(JSON.stringify(elementQuery, null, 2));
-                    logger.info('ELEMENT RESPONSE');
-                    logger.info(JSON.stringify(elementResponse, null, 2));
-                }
+
+                logger.debug('ELEMENT REQUEST: ' + JSON.stringify(elementQuery, null, 2));
+                logger.debug('ELEMENT RESPONSE: ' + JSON.stringify(elementResponse, null, 2));
 
                 const queryUri = this.buildSampleUri(elementId, metricId, config, logger);
                 const resp = await request({
@@ -141,12 +133,10 @@ class SampleService {
                     method: 'GET',
                     uri: `${queryUri}`
                 });
-                if (config.excessivelogging) {
-                    logger.info('SAMPLE REQUEST');
-                    logger.info(`Query URI: ${queryUri}`);
-                    logger.info('SAMPLE RESPONSE');
-                    // logger.info(JSON.stringify(resp, null, 2));
-                }
+
+                logger.debug('SAMPLE REQUEST: ' + queryUri);
+                logger.trace(JSON.stringify(resp, null, 2));
+
                 rows.push([elementId, element.name, element.type, config.startTime, config.endTime, metricFqn, metricId, resp.sampleMin, resp.sampleAvg, resp.sampleMax, resp.sampleSum]);
             }
 
