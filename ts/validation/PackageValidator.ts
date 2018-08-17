@@ -24,13 +24,16 @@ class PackageValidator {
 
     this.logger.log('Package: ' + pkg);
 
+    const validJsonMessage = 'Manifest is valid JSON';
     try {
       const json = fs.readFileSync(path + '/package.json', 'utf8');
-      const jsonParseError = jsonValidator.validate(json, false);
-
-      errorTracker.assertTrue(!jsonParseError, 'No duplicate object keys');
 
       const manifest = JSON.parse(json);
+      errorTracker.assertTrue(true, validJsonMessage);
+
+      const jsonParseError = jsonValidator.validate(json, false);
+      errorTracker.assertTrue(!jsonParseError, 'No duplicate object keys');
+
       const downloadUrl = manifest.manifest.distro.download;
 
       const zipUrl = this.packageRepoRoot + pkg.split('.').join('-') + '/archive/master.zip';
@@ -79,7 +82,11 @@ class PackageValidator {
         this.logger.log('No analytics, moving on');
       }
     } catch (err) {
-      errorTracker.log('Error: ' + err);
+      if (err.name === 'SyntaxError') {
+        errorTracker.assertTrue(false, validJsonMessage);
+      } else {
+        errorTracker.log(err);
+      }
     }
 
     errorTracker.exit(continueOnFinish);
