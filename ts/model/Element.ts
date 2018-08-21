@@ -1,4 +1,10 @@
-/* tslint:disable: max-classes-per-file */
+import { Attribute } from './Attribute';
+import { Check } from './Check';
+import { Metric } from './Metric';
+import { Relation } from './Relation';
+import { Sample } from './Sample';
+import { Tag } from './Tag';
+
 export class Element {
     public tenantId: string;
     public id: string;
@@ -19,53 +25,4 @@ export class Element {
         const attribute = this.attributes.find((entry) => entry.name === name);
         return attribute ? attribute.value : null;
     }
-}
-
-export class Attribute {
-    public id: string;
-    public dataSourceId: number;
-    public name: string;
-    public value: string;
-    public attributeType: string;
-}
-
-export class Metric {
-    public dataSourceId: number;
-    public id: string;
-    public fqn: string;
-    public name: string;
-    public unit: string;
-    public type: string;
-    public sparseDataStrategy: string;
-    public tags: Tag[];
-}
-
-export class Tag {
-    public id: string;
-    public dataSourceId: number;
-    public name: string;
-    public value: string;
-}
-
-export class Relation {
-    public id: string;
-    public dataSourceId: number;
-    public fqn: string;
-}
-
-export class Sample {
-    public timestamp: Date;
-    public val: number;
-    public min: number;
-    public max: number;
-    public avg: number;
-    public sum: number;
-    public cnt: number;
-    public actual: number;
-}
-
-export class Check {
-    public id: string;
-    public tenantId: string;
-    public name: string;
 }

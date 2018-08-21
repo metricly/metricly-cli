@@ -2,15 +2,16 @@ import * as moment from 'moment';
 import * as request from 'request-promise';
 import * as Table from 'tty-table';
 
-import {ElasticSearchQuery, ElasticSearchQueryList, ElasticSearchQueryMap, ElasticSearchSortField, ElasticSearchSourceFilter, Page} from '../model/ElasticSearchQuery';
-import ElementService from './ElementService';
-const elementService = new ElementService();
+import { ElasticSearchQuery } from '../model/ElasticSearchQuery';
+import { ElasticSearchQueryList } from '../model/ElasticSearchQueryList';
+import { ElasticSearchQueryMap } from '../model/ElasticSearchQueryMap';
+import { ElasticSearchSortField } from '../model/ElasticSearchSortField';
+import { ElasticSearchSourceFilter } from '../model/ElasticSearchSourceFilter';
 
 class SampleService {
     public async getSamples(elementId, metricId, config, logger): Promise<void> {
         try {
-            const queryUri = this.buildSampleUri(elementId, metricId, config, logger);
-            logger.debug(`Running Query: ${queryUri}`);
+            const queryUri = this.buildSampleUri(false, elementId, metricId, config, logger);
 
             const response = await request({
                 auth: {
@@ -58,27 +59,6 @@ class SampleService {
         }
     }
 
-    public buildSampleUri(elementId, metricId, config, logger) {
-        let queryUri = `${config.endpoint}`;
-        queryUri += `/ui/elements/${elementId}`;
-        queryUri += `/metrics/${metricId}`;
-        queryUri += `/samples?aggregations=ACTUAL`;
-        if (config.rollup) {
-            queryUri += `&rollup=${config.rollup}`;
-        }
-        if (config.duration) {
-            queryUri += `&duration=${config.duration}`;
-        }
-        if (config.startTime) {
-            queryUri += `&startTime=${config.startTime}`;
-        }
-        if (config.endTime) {
-            queryUri += `&endTime=${config.endTime}`;
-        }
-
-        return queryUri;
-    }
-
     public async summarizeSamples(config, logger): Promise<void> {
         try {
             const queryBody = this.buildElementQuery(config, logger);
@@ -87,22 +67,18 @@ class SampleService {
             if (!config.startTime) {
                 config.startTime = moment().startOf('month').format();
             }
-
             if (!config.endTime) {
                 config.endTime = moment().format();
             }
 
             const metricRequest = this.buildRequest(config, queryBody, 'metrics/elasticsearch/metricQuery');
             const metricResponse = await request(metricRequest);
-            logger.debug('METRIC REQUEST: ' + JSON.stringify(metricRequest, null, 2));
-            logger.debug('METRIC RESPONSE: ' + JSON.stringify(metricResponse, null, 2));
 
             const rows = [];
-
-            for (const el of metricResponse.page.content) {
-                const elementId = el.elementId;
-                const metricId = el.id;
-                const metricFqn = el.fqn;
+            for (const row of metricResponse.page.content) {
+                const elementId = row.elementId;
+                const metricId = row.id;
+                const metricFqn = row.fqn;
 
                 // get Element name
                 const elementQuery = new ElasticSearchQuery();
@@ -118,26 +94,21 @@ class SampleService {
                     method: 'POST',
                     uri: `${config.endpoint}/elements/elasticsearch/elementQuery`
                 });
-                const element = {id: elementResponse.page.content[0].id, name: elementResponse.page.content[0].name, type: elementResponse.page.content[0].type};
 
-                logger.debug('ELEMENT REQUEST: ' + JSON.stringify(elementQuery, null, 2));
-                logger.debug('ELEMENT RESPONSE: ' + JSON.stringify(elementResponse, null, 2));
-
-                const queryUri = this.buildSampleUri(elementId, metricId, config, logger);
-                const resp = await request({
-                    auth: {
-                        pass: config.password,
-                        user: config.username
-                    },
-                    json: true,
-                    method: 'GET',
-                    uri: `${queryUri}`
-                });
-
-                logger.debug('SAMPLE REQUEST: ' + queryUri);
-                logger.trace(JSON.stringify(resp, null, 2));
-
-                rows.push([elementId, element.name, element.type, config.startTime, config.endTime, metricFqn, metricId, resp.sampleMin, resp.sampleAvg, resp.sampleMax, resp.sampleSum]);
+                if (elementResponse.page.content.length > 0) {
+                    const element = { id: elementResponse.page.content[0].id, name: elementResponse.page.content[0].name, type: elementResponse.page.content[0].type };
+                    const queryUri = this.buildSampleUri(true, element.id, metricId, config, logger);
+                    const resp = await request({
+                        auth: {
+                            pass: config.password,
+                            user: config.username
+                        },
+                        json: true,
+                        method: 'GET',
+                        uri: `${queryUri}`
+                    });
+                    rows.push([element.id, element.name, element.type, config.startTime, config.endTime, metricFqn, metricId, resp.sampleMin, resp.sampleAvg, resp.sampleMax, resp.sampleSum]);
+                }
             }
 
             if (config.format === 'csv') {
@@ -162,6 +133,30 @@ class SampleService {
         } catch (e) {
             logger.error('There was an error listing the elements: ' + e);
         }
+    }
+
+    public buildSampleUri(uiEndpont, elementId, metricId, config, logger) {
+        let queryUri = `${config.endpoint}`;
+        if (uiEndpont) {
+            queryUri += '/ui';
+        }
+        queryUri += `/elements/${elementId}`;
+        queryUri += `/metrics/${metricId}`;
+        queryUri += `/samples?aggregations=ACTUAL`;
+        if (config.rollup) {
+            queryUri += `&rollup=${config.rollup}`;
+        }
+        if (config.duration) {
+            queryUri += `&duration=${config.duration}`;
+        }
+        if (config.startTime) {
+            queryUri += `&startTime=${config.startTime}`;
+        }
+        if (config.endTime) {
+            queryUri += `&endTime=${config.endTime}`;
+        }
+
+        return queryUri;
     }
 
     public buildRequest(config, queryBody, uri) {
@@ -189,10 +184,6 @@ class SampleService {
         if (config.type) {
             query.elementTypes = ElasticSearchQueryList.withItems(config.type.split(','));
         }
-        // if (config.attribute) {
-        //     const attr = config.attribute.split('=');
-        //     query.elementAttributes = ElasticSearchQueryMap.withItems([{key: attr[0], value: attr[1]}], 'key', 'value');
-        // }
         if (config.tag) {
             const tag = config.tag.split('=');
             query.elementTags = ElasticSearchQueryMap.withItems([{key: tag[0], value: tag[1]}], 'key', 'value');
