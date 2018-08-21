@@ -160,68 +160,42 @@ class ElementService {
 
   public async elementSearch(config, logger): Promise<void> {
 
+    try {
     // base query
     const requestBody = this.buildBaseElementQuery(config);
+      // find elements
+    const response = await this.findElements(requestBody, config.name, config.type,
+        config.attribute, config.tag, config.collector);
 
-    // add name term
-    if (config.name) {
-      const field = 'elementNames';
-      requestBody.body[field] = this.buildValueQueryTerm(config.name, true, false);
+    const rows = [];
+    response.page.content.forEach((el) => {
+      rows.push([el.name, el.type, el.id, el.fqn]);
+    });
+
+    // CSV
+    if (config.format === 'csv') {
+      logger.info('name, type, id, fqn');
+      rows.forEach((r) => logger.info(`${r[0]},${r[1]},${r[2]},${r[3]}`));
     }
-    // add type term
-    if (config.type) {
-      const field = 'elementTypes';
-      requestBody.body[field] = this.buildValueQueryTerm(config.type, true, true);
+    // TTY TABLE
+    if (config.format === 'table') {
+
+      const header = [{value: 'name'}, {value: 'type'}, {value: 'id'}, {value: 'fqn'}];
+      const table = Table(header, rows, {
+        align : 'left',
+        borderStyle : 1,
+        color : 'white',
+        headerAlign : 'left'
+      });
+
+      logger.info(table.render());
+      let summary = `Page Size [${response.page.size}] - `;
+      summary += `Page Number [${response.page.number} of ${response.page.totalPages - 1}] - `;
+      summary += `Total Elements [${response.page.totalElements}]`;
+      logger.info(`\t\t${summary}\n`);
     }
-    // add attributes term
-    if (config.attribute) {
-      const attrKey = config.attribute.split('=')[0];
-      const attrVal = config.attribute.split('=')[1];
-
-      const field = 'attributes';
-      requestBody.body[field] = this.buildKeyValueQueryTerm(attrKey, attrVal);
-    }
-    // add elementTags term
-    if (config.tag) {
-      const tagKey = config.tag.split('=')[0];
-      const tagVal = config.tag.split('=')[1];
-
-      const field = 'elementTags';
-      requestBody.body[field] = this.buildKeyValueQueryTerm(tagKey, tagVal);
-    }
-    // add collectors term
-    if (config.collector) {
-      const field = 'collectorNames';
-      requestBody.body[field] = this.buildValueQueryTerm(config.collector, true, true);
-    }
-
-    logger.debug(JSON.stringify(requestBody, null, 2));
-
-    try {
-      const response = await request(requestBody);
-      if (config.format === 'text') {
-
-        const header = [{value: 'name'}, {value: 'type'}, {value: 'id'}, {value: 'fqn'}];
-
-        const rows = [];
-        response.page.content.forEach((el) => {
-          rows.push([el.name, el.type, el.id, el.fqn]);
-        });
-
-        const table = Table(header, rows, {
-          align : 'left',
-          borderStyle : 1,
-          color : 'white',
-          headerAlign : 'left'
-        });
-
-        logger.info(table.render());
-        let summary = `Page Size [${response.page.size}] - `;
-        summary += `Page Number [${response.page.number} of ${response.page.totalPages - 1}] - `;
-        summary += `Total Elements [${response.page.totalElements}]`;
-        logger.info(`\t\t${summary}\n`);
-      }
-      if (config.format === 'json') {
+    // Formated JSON
+    if (config.format === 'json') {
         logger.info(JSON.stringify(response.page.content, null, 2));
       }
     } catch (e) {
@@ -229,11 +203,48 @@ class ElementService {
     }
   }
 
-  public buildBaseElementQuery(config) {
+  public async findElements(requestBody, name, type, attribute, tag, collector) {
+
+    // add name term
+    if (name) {
+      const field = 'elementNames';
+      requestBody.body[field] = this.buildValueQueryTerm(name, true, false);
+    }
+    // add type term
+    if (type) {
+      const field = 'elementTypes';
+      requestBody.body[field] = this.buildValueQueryTerm(type, true, true);
+    }
+    // add attributes term
+    if (attribute) {
+      const attrKey = attribute.split('=')[0];
+      const attrVal = attribute.split('=')[1];
+
+      const field = 'attributes';
+      requestBody.body[field] = this.buildKeyValueQueryTerm(attrKey, attrVal);
+    }
+    // add elementTags term
+    if (tag) {
+      const tagKey = tag.split('=')[0];
+      const tagVal = tag.split('=')[1];
+
+      const field = 'elementTags';
+      requestBody.body[field] = this.buildKeyValueQueryTerm(tagKey, tagVal);
+    }
+    // add collectors term
+    if (collector) {
+      const field = 'collectorNames';
+      requestBody.body[field] = this.buildValueQueryTerm(collector, true, true);
+    }
+
+    return await request(requestBody);
+  }
+
+  public buildBaseElementQuery(config, includeMetrics = false) {
     const queryPage = config.page || 0;
     const queryPageSize = config.pageSize || 35;
 
-    return {
+    const baseQuery = {
       auth: {
         pass: config.password,
         user: config.username
@@ -255,6 +266,12 @@ class ElementService {
       method: 'POST',
       uri: `${config.endpoint}/elements/elasticsearch/elementQuery`
     };
+
+    if (includeMetrics) {
+      baseQuery.body.sourceFilter.excludes = [];
+    }
+
+    return baseQuery;
   }
 
   public buildValueQueryTerm(value: string, queryContains = true, queryLiteral = false) {
