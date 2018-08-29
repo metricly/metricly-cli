@@ -15,6 +15,10 @@
                 "multiline": "never",
                 "esSpecCompliant": true
             }
+        ],
+        "max-line-length": [
+          true,
+          200
         ]
     },
     "rulesDirectory": []
