@@ -1,7 +1,12 @@
-import { ViewDefinition } from './report/ViewDefinition';
 import { View } from './report/View';
+import { ViewDefinition } from './report/ViewDefinition';
 
 export class Report {
+    public static fromJSON(json: string): Report {
+        const user = Object.create(Report.prototype);
+        return Object.assign(user, json);
+    }
+
     public id: string;
     public name: string;
     public type: string;
@@ -11,9 +16,4 @@ export class Report {
     public views: View[];
     public viewDefinitions: ViewDefinition[];
     public parameters: string[];
-
-    static fromJSON(json: string): Report {
-        let user = Object.create(Report.prototype);
-        return Object.assign(user, json);
-      }
 }

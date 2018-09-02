@@ -19,6 +19,18 @@ class ReportCommands {
         const config = configService.mergeConfig(options);
         reportService.list(config, logger);
       });
+
+    (caporal as any)
+      .command('report getEC2CostData', 'Get EC2 Cost Data')
+      .option('--username', 'Metricly Username')
+      .option('--password', 'Metricly Password')
+      .option('--profile', 'Metricly profile', /.*/, 'default')
+      .option('--format', 'format options: text, json', ['text', 'json'], 'text')
+      .action((args, options, logger) => {
+        const config = configService.mergeConfig(options);
+        reportService.getEC2CostData(config, logger);
+      });
+
   }
 }
 
