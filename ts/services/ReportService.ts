@@ -1,6 +1,7 @@
 import * as Bluebird from 'bluebird';
 import * as fs from 'fs';
 import * as request from 'request-promise';
+import { Report } from '../model/Report';
 
 class ReportService {
 
@@ -20,7 +21,8 @@ class ReportService {
         logger.info(response.reports.sort((rpt1, rpt2) => {
           return rpt1.name.localeCompare(rpt2.name);
         }).map((rpt) => {
-          return rpt.name + ' (ID: ' + rpt.id + ')';
+          const report = Report.fromJSON(rpt);
+          return report.name + ' (ID: ' + report.id + ')';
         }));
       }
       if (config.format === 'json') {
