@@ -39,23 +39,28 @@ class ReportService {
       if (dailyAwsCostReport) {
         const report = Array.isArray(dailyAwsCostReport) ? dailyAwsCostReport[0] : dailyAwsCostReport;
         if (report) {
-          logger.debug('Found DailyAwsCost: ' + report.id);
           const elementsInScope = await this.getElementsInScope(config, logger, report);
-          logger.info('ElementsInScope: ' + elementsInScope.view + '\n');
           if (elementsInScope.content) {
-            const elementFilter = elementsInScope.content.map( (x) => x.element_id) ;
+            const elementFilter = elementsInScope.content.map( (x) => x.element_id);
             const groupedCost = await this.getGroupedCost(config, logger, report, elementFilter);
-            // log cost for now
-            logger.info(groupedCost.content.sort((rpt1, rpt2) => {
-              return rpt1.display_category.localeCompare(rpt2.display_category);
-            }).map((rpt) => {
-              return rpt.display_category + ' (Cost: ' + rpt.total_cost + ')';
-            }));
+            if (config.format === 'text') {
+              // log cost for now
+              logger.info(groupedCost.content.sort((rpt1, rpt2) => {
+                return rpt1.display_category.localeCompare(rpt2.display_category);
+              }).map((rpt) => {
+                return rpt.display_category + ' (Cost: ' + rpt.total_cost + ')';
+              }));
+            }
+
+            // json
+            if (config.format === 'json') {
+              logger.info(JSON.stringify(groupedCost, null, 2));
+            }
           }
         }
       }
     } catch (e) {
-      logger.error('There was an error getting the reports: ' + e);
+      logger.error('There was an error getting ec2 cost data: ' + e);
     }
   }
 
@@ -78,18 +83,18 @@ class ReportService {
 
   private async getElementsInScope(config, logger, report: Report): Promise<ReportContent> {
 
-    const requestStartDate = new Date(report.endDate);
-    requestStartDate.setHours(0, 0, 0, 0); // set to midnight
-    const reportScope = new ReportScope('elementsInScope', { startDate: requestStartDate, endDate: report.endDate, elementTypes: ['EC2', 'WINSVR', 'SERVER'] });
+    const reportScope = new ReportScope('elementsInScope', {
+      elementTypes: ['EC2', 'WINSVR', 'SERVER'],
+      endDate: report.endDate,
+      startDate: this.getStartDate(report.endDate)
+    });
     return this.doReportContentPost(config, logger, reportScope, report);
+
   }
 
   private async getGroupedCost(config, logger, report: Report, elementIds: string[]): Promise<ReportContent> {
 
-    const requestStartDate = new Date(report.endDate);
-    requestStartDate.setHours(0, 0, 0, 0); // set to midnight
-    // create a default scope
-    const defaultGroupedCostReportScope = new ReportScope('groupedCost', {
+    const reportScope = new ReportScope('groupedCost', {
       activeQuantityAgg: 'sum',
       categoriseBy: 'category',
       elementFilter: elementIds,
@@ -98,10 +103,10 @@ class ReportService {
       groupKey: 'attribute=instanceType',
       instanceTypeKey: 'instanceType',
       service: 'EC2',
-      startDate: requestStartDate
+      startDate: this.getStartDate(report.endDate)
     });
+    return this.doReportContentPost(config, logger, reportScope, report);
 
-    return this.doReportContentPost(config, logger, defaultGroupedCostReportScope, report);
   }
 
   private async doReportContentPost(config, logger, bodyObject, report) {
@@ -119,6 +124,12 @@ class ReportService {
     } catch (e) {
       logger.error('There was an error fetching the report content: ' + e);
     }
+  }
+
+  private getStartDate(endDate: Date) {
+    const startDate = new Date(endDate);
+    startDate.setHours(0, 0, 0, 0); // set to midnight
+    return startDate.getUTCDate;
   }
 
 }

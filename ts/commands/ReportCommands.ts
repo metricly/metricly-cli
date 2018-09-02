@@ -21,7 +21,7 @@ class ReportCommands {
       });
 
     (caporal as any)
-      .command('report getEC2CostData', 'Get EC2 Cost Data')
+      .command('report ec2cost', 'Retrieve ec2 cost data grouped and aggregated.')
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
       .option('--profile', 'Metricly profile', /.*/, 'default')
