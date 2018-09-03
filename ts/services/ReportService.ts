@@ -1,5 +1,6 @@
 import * as Bluebird from 'bluebird';
 import * as fs from 'fs';
+import * as moment from 'moment';
 import * as request from 'request-promise';
 import { Report } from '../model/Report';
 import { ReportContent } from '../model/report/ReportContent';
@@ -28,7 +29,7 @@ class ReportService {
     }
   }
 
-  public async getEC2CostData(config, logger): Promise<void> {
+  public async ec2cost(config, logger): Promise<void> {
     logger.debug('\nListing EC2CostData');
     try {
       const reports = await this.getReports(config, logger);
@@ -41,10 +42,9 @@ class ReportService {
         if (report) {
           const elementsInScope = await this.getElementsInScope(config, logger, report);
           if (elementsInScope.content) {
-            const elementFilter = elementsInScope.content.map( (x) => x.element_id);
+            const elementFilter = elementsInScope.content.map( (x) => x.element_id );
             const groupedCost = await this.getGroupedCost(config, logger, report, elementFilter);
             if (config.format === 'text') {
-              // log cost for now
               logger.info(groupedCost.content.sort((rpt1, rpt2) => {
                 return rpt1.display_category.localeCompare(rpt2.display_category);
               }).map((rpt) => {
@@ -85,9 +85,10 @@ class ReportService {
 
     const reportScope = new ReportScope('elementsInScope', {
       elementTypes: ['EC2', 'WINSVR', 'SERVER'],
-      endDate: report.endDate,
-      startDate: this.getStartDate(report.endDate)
-    });
+      endDate: this.getEndDate(report.endDate, config.timerange),
+      startDate: this.getStartDate(report.endDate, config.timerange)
+    },
+    config.rowlimit);
     return this.doReportContentPost(config, logger, reportScope, report);
 
   }
@@ -98,13 +99,14 @@ class ReportService {
       activeQuantityAgg: 'sum',
       categoriseBy: 'category',
       elementFilter: elementIds,
-      endDate: report.endDate,
-      groupBy: 'elementName',
-      groupKey: 'attribute=instanceType',
+      endDate: this.getEndDate(report.endDate, config.timerange),
+      groupBy: config.groupby,
+      groupKey: 'attribute=' + config.groupbykey,
       instanceTypeKey: 'instanceType',
       service: 'EC2',
-      startDate: this.getStartDate(report.endDate)
-    });
+      startDate: this.getStartDate(report.endDate, config.timerange)
+    },
+    config.rowlimit);
     return this.doReportContentPost(config, logger, reportScope, report);
 
   }
@@ -126,10 +128,21 @@ class ReportService {
     }
   }
 
-  private getStartDate(endDate: Date) {
-    const startDate = new Date(endDate);
-    startDate.setHours(0, 0, 0, 0); // set to midnight
-    return startDate.getUTCDate;
+  private getStartDate(endDate: Date, timerange: string) {
+
+    return timerange === 'lastMonth' ?
+                          moment(endDate).utc().subtract(1, 'months').startOf('month').toISOString() :
+           timerange === 'monthToDate' ?
+                          moment(endDate).utc().startOf('month').toISOString() :
+                          moment(endDate).utc().startOf('day').toISOString();
+
+  }
+
+  private getEndDate(endDate: Date, timerange: string) {
+
+    return timerange === 'lastMonth' ?
+                          moment(endDate).utc().subtract(1, 'months').endOf('month').toISOString() :
+                          moment(endDate).toISOString();
   }
 
 }
