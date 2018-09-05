@@ -26,7 +26,7 @@ class ReportCommands {
       .option('--password', 'Metricly Password')
       .option('--profile', 'Metricly profile', /.*/, 'default')
       .option('--format', 'format options: text, json', ['text', 'json'], 'text')
-      .option('--timerange', 'relative timerange options: latestDay, monthToDate, lastMonth', ['latestDay', 'monthToDate', 'lastMonth'], 'latestDay')
+      .option('--period', 'relative period options: latestDay, monthToDate, lastMonth', ['latestDay', 'monthToDate', 'lastMonth'], 'latestDay')
       .option('--groupby', 'groupby options: elementName, givenKey', ['elementName', 'givenKey'], 'elementName')
       .option('--groupbykey', 'groupbykey options: instanceType, accountId, availabilityZone', ['instanceType', 'accountId', 'availabilityZone'], 'instanceType')
       .option('--rowlimit', 'row limit: 20, 50, 100', /.*/, '20')

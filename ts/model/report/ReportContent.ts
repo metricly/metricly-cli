@@ -2,8 +2,8 @@ import { ViewDefinition } from './ViewDefinition';
 
 export class ReportContent {
     public static fromJSON(json: string): ReportContent {
-        const user = Object.create(ReportContent.prototype);
-        return Object.assign(user, json);
+        const reportContent = Object.create(ReportContent.prototype);
+        return Object.assign(reportContent, json);
     }
 
     public content: any;

@@ -18,7 +18,7 @@ class ReportService {
         logger.info(reports.sort((rpt1, rpt2) => {
           return rpt1.name.localeCompare(rpt2.name);
         }).map((report) => {
-          return report.name + ' (Type: ' + report.type + ', ID: ' + report.id + ')';
+          return `${report.name} (Type: ${report.type}, ID: ${report.id})`;
         }));
       }
       if (config.format === 'json') {
@@ -48,7 +48,7 @@ class ReportService {
               logger.info(groupedCost.content.sort((rpt1, rpt2) => {
                 return rpt1.display_category.localeCompare(rpt2.display_category);
               }).map((rpt) => {
-                return rpt.display_category + ' (Cost: ' + rpt.total_cost + ')';
+                return `${rpt.display_category} (Cost: ${rpt.total_cost})`;
               }));
             }
 
@@ -60,7 +60,7 @@ class ReportService {
         }
       }
     } catch (e) {
-      logger.error('There was an error getting ec2 cost data: ' + e);
+      logger.error('There was an error getting EC2 cost data: ' + e);
     }
   }
 
@@ -85,12 +85,11 @@ class ReportService {
 
     const reportScope = new ReportScope('elementsInScope', {
       elementTypes: ['EC2', 'WINSVR', 'SERVER'],
-      endDate: this.getEndDate(report.endDate, config.timerange),
-      startDate: this.getStartDate(report.endDate, config.timerange)
+      endDate: this.getEndDate(report.endDate, config.period),
+      startDate: this.getStartDate(report.endDate, config.period)
     },
     config.rowlimit);
     return this.doReportContentPost(config, logger, reportScope, report);
-
   }
 
   private async getGroupedCost(config, logger, report: Report, elementIds: string[]): Promise<ReportContent> {
@@ -99,16 +98,15 @@ class ReportService {
       activeQuantityAgg: 'sum',
       categoriseBy: 'category',
       elementFilter: elementIds,
-      endDate: this.getEndDate(report.endDate, config.timerange),
+      endDate: this.getEndDate(report.endDate, config.period),
       groupBy: config.groupby,
       groupKey: 'attribute=' + config.groupbykey,
       instanceTypeKey: 'instanceType',
       service: 'EC2',
-      startDate: this.getStartDate(report.endDate, config.timerange)
+      startDate: this.getStartDate(report.endDate, config.period)
     },
     config.rowlimit);
     return this.doReportContentPost(config, logger, reportScope, report);
-
   }
 
   private async doReportContentPost(config, logger, bodyObject, report) {
@@ -128,19 +126,19 @@ class ReportService {
     }
   }
 
-  private getStartDate(endDate: Date, timerange: string) {
+  private getStartDate(endDate: Date, period: string) {
 
-    return timerange === 'lastMonth' ?
+    return period === 'lastMonth' ?
                           moment(endDate).utc().subtract(1, 'months').startOf('month').toISOString() :
-           timerange === 'monthToDate' ?
+           period === 'monthToDate' ?
                           moment(endDate).utc().startOf('month').toISOString() :
                           moment(endDate).utc().startOf('day').toISOString();
 
   }
 
-  private getEndDate(endDate: Date, timerange: string) {
+  private getEndDate(endDate: Date, period: string) {
 
-    return timerange === 'lastMonth' ?
+    return period === 'lastMonth' ?
                           moment(endDate).utc().subtract(1, 'months').endOf('month').toISOString() :
                           moment(endDate).toISOString();
   }
