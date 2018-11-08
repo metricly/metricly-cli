@@ -18,13 +18,14 @@ class SampleCommands {
       .option('--format', 'output format: text, json', ['table', 'csv', 'json'], 'table')
       .argument('<elementId>', 'Element ID')
       .argument('<metricId>', 'Metric ID')
+      .argument('<metricFqn>', 'Metric FQN')
       .option('--duration', 'Duration (for example: PT1H, PT1D, PT1W)')
       .option('--startTime', 'ISO8601 start time')
       .option('--endTime', 'ISO8601 end time')
       .option('--rollup', 'Data rollup', ['ZERO', 'PT5M', 'PT1H'], 'PT5M')
       .action((args, options, logger) => {
         const config = configService.mergeConfig(options);
-        sampleService.getSamples(args.elementId, args.metricId, config, logger);
+        sampleService.getSamples(args.elementId, args.metricId, args.metricFqn, config, logger);
       });
 
     (caporal as any)
