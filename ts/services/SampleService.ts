@@ -70,44 +70,52 @@ class SampleService {
             if (!config.endTime) {
                 config.endTime = moment().format();
             }
+            queryBody.startDate = config.startTime;
+            queryBody.endDate = config.endTime;
 
             const metricRequest = this.buildRequest(config, queryBody, 'metrics/elasticsearch/metricQuery');
             const metricResponse = await request(metricRequest);
 
             const rows = [];
             for (const row of metricResponse.page.content) {
-                const elementId = row.elementId;
-                const metricId = row.id;
-                const metricFqn = row.fqn;
+                try {
+                    const elementId = row.elementId;
+                    const metricId = row.id;
+                    const metricFqn = row.fqn;
 
-                // get Element name
-                const elementQuery = new ElasticSearchQuery();
-                elementQuery.elementIds = ElasticSearchQueryList.withItem(elementId);
-                elementQuery.sourceFilter = new ElasticSearchSourceFilter([ 'id', 'name', 'type']);
-                const elementResponse = await request({
-                    auth: {
-                        pass: config.password,
-                        user: config.username
-                    },
-                    body: elementQuery,
-                    json: true,
-                    method: 'POST',
-                    uri: `${config.endpoint}/elements/elasticsearch/elementQuery`
-                });
-
-                if (elementResponse.page.content.length > 0) {
-                    const element = { id: elementResponse.page.content[0].id, name: elementResponse.page.content[0].name, type: elementResponse.page.content[0].type };
-                    const queryUri = this.buildSampleUri(true, element.id, metricId, metricFqn, config, logger);
-                    const resp = await request({
+                    // get Element name
+                    const elementQuery = new ElasticSearchQuery();
+                    elementQuery.elementIds = ElasticSearchQueryList.withItem(elementId);
+                    elementQuery.sourceFilter = new ElasticSearchSourceFilter([ 'id', 'name', 'type']);
+                    elementQuery.startDate = config.startTime;
+                    elementQuery.endDate = config.endTime;
+                    const elementResponse = await request({
                         auth: {
                             pass: config.password,
                             user: config.username
                         },
+                        body: elementQuery,
                         json: true,
-                        method: 'GET',
-                        uri: `${queryUri}`
+                        method: 'POST',
+                        uri: `${config.endpoint}/elements/elasticsearch/elementQuery`
                     });
-                    rows.push([element.id, element.name, element.type, config.startTime, config.endTime, metricFqn, metricId, resp.sampleMin, resp.sampleAvg, resp.sampleMax, resp.sampleSum]);
+
+                    if (elementResponse.page.content.length > 0) {
+                        const element = { id: elementResponse.page.content[0].id, name: elementResponse.page.content[0].name, type: elementResponse.page.content[0].type };
+                        const queryUri = this.buildSampleUri(true, element.id, metricId, metricFqn, config, logger);
+                        const resp = await request({
+                            auth: {
+                                pass: config.password,
+                                user: config.username
+                            },
+                            json: true,
+                            method: 'GET',
+                            uri: `${queryUri}`
+                        });
+                        rows.push([element.id, element.name, element.type, config.startTime, config.endTime, metricFqn, metricId, resp.sampleMin, resp.sampleAvg, resp.sampleMax, resp.sampleSum]);
+                    }
+                } catch (e) {
+                    logger.error('There was an error: ' + e);
                 }
             }
 
