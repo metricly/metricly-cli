@@ -9,9 +9,9 @@ import { ElasticSearchSortField } from '../model/ElasticSearchSortField';
 import { ElasticSearchSourceFilter } from '../model/ElasticSearchSourceFilter';
 
 class SampleService {
-    public async getSamples(elementId, metricId, config, logger): Promise<void> {
+    public async getSamples(elementId, metricId, metricFqn, config, logger): Promise<void> {
         try {
-            const queryUri = this.buildSampleUri(false, elementId, metricId, config, logger);
+            const queryUri = this.buildSampleUri(false, elementId, metricId, metricFqn, config, logger);
 
             const response = await request({
                 auth: {
@@ -25,11 +25,11 @@ class SampleService {
 
             if (config.format === 'table') {
                 const header = [{value: 'timestamp'}, {value: 'rollup'},
-                    {value: 'cnt'}, {value: 'min'}, {value: 'avg'}, {value: 'max'}, {value: 'sum'}];
+                    {value: 'cnt'}, {value: 'min'}, {value: 'avg'}, {value: 'max'}, {value: 'sum'}, {value: 'val'}, {value: 'actual'}];
 
                 const rows = [];
                 response.samples.forEach((s) => {
-                  rows.push([s.timestamp, s.rollup, s.data.cnt, s.data.min, s.data.avg, s.data.max, s.data.sum]);
+                  rows.push([s.timestamp, s.rollup, s.data.cnt, s.data.min, s.data.avg, s.data.max, s.data.sum, s.data.val, s.data.actual]);
                 });
 
                 const table = Table(header, rows, {
@@ -42,11 +42,11 @@ class SampleService {
                 logger.info(table.render());
             }
             if (config.format === 'csv') {
-                logger.info('timestamp, rollup, cnt, min, avg, max, sum, val');
+                logger.info('timestamp, rollup, cnt, min, avg, max, sum, val, actual');
                 const rows = [];
                 response.samples.forEach((s) => {
                     let line = `${s.timestamp}, ${s.rollup}, `;
-                    line += `${s.data.cnt}, ${s.data.min}, ${s.data.avg}, ${s.data.max}, ${s.data.sum}, ${s.data.val}`;
+                    line += `${s.data.cnt}, ${s.data.min}, ${s.data.avg}, ${s.data.max}, ${s.data.sum}, ${s.data.val}, ${s.data.actual}`;
                     logger.info(line);
                 });
             }
@@ -97,7 +97,7 @@ class SampleService {
 
                 if (elementResponse.page.content.length > 0) {
                     const element = { id: elementResponse.page.content[0].id, name: elementResponse.page.content[0].name, type: elementResponse.page.content[0].type };
-                    const queryUri = this.buildSampleUri(true, element.id, metricId, config, logger);
+                    const queryUri = this.buildSampleUri(true, element.id, metricId, metricFqn, config, logger);
                     const resp = await request({
                         auth: {
                             pass: config.password,
@@ -131,11 +131,11 @@ class SampleService {
                 logger.info(table.render());
             }
         } catch (e) {
-            logger.error('There was an error listing the elements: ' + e);
+            logger.error('There was an error: ' + e);
         }
     }
 
-    public buildSampleUri(uiEndpont, elementId, metricId, config, logger) {
+    public buildSampleUri(uiEndpont, elementId, metricId, metricFqn, config, logger) {
         let queryUri = `${config.endpoint}`;
         if (uiEndpont) {
             queryUri += '/ui';
@@ -143,6 +143,7 @@ class SampleService {
         queryUri += `/elements/${elementId}`;
         queryUri += `/metrics/${metricId}`;
         queryUri += `/samples?aggregations=ACTUAL`;
+        queryUri += `&fqn=${metricFqn}`;
         if (config.rollup) {
             queryUri += `&rollup=${config.rollup}`;
         }
