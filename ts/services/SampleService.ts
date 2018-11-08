@@ -115,7 +115,7 @@ class SampleService {
                         rows.push([element.id, element.name, element.type, config.startTime, config.endTime, metricFqn, metricId, resp.sampleMin, resp.sampleAvg, resp.sampleMax, resp.sampleSum]);
                     }
                 } catch (e) {
-                    logger.error('There was an error: ' + e);
+                    logger.error('There was an error processing one metric: ' + e);
                 }
             }
 
@@ -139,7 +139,7 @@ class SampleService {
                 logger.info(table.render());
             }
         } catch (e) {
-            logger.error('There was an error: ' + e);
+            logger.error('There was an error finding metrics: ' + e);
         }
     }
 
