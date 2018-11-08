@@ -95,12 +95,12 @@ class SampleService {
                     uri: `${config.endpoint}/elements/elasticsearch/elementQuery`
                 });
 
-                    if (elementResponse.page.content.length > 0) {
-                        const element = { id: elementResponse.page.content[0].id, name: elementResponse.page.content[0].name, type: elementResponse.page.content[0].type };
-                        const queryUri = this.buildSampleUri(true, element.id, metricId, metricFqn, config, logger);
-                        const resp = await request({
-                            auth: {
-                                pass: config.password,
+                if (elementResponse.page.content.length > 0) {
+                    const element = { id: elementResponse.page.content[0].id, name: elementResponse.page.content[0].name, type: elementResponse.page.content[0].type };
+                    const queryUri = this.buildSampleUri(true, element.id, metricId, metricFqn, config, logger);
+                    const resp = await request({
+                        auth: {
+                            pass: config.password,
                             user: config.username
                         },
                         json: true,
