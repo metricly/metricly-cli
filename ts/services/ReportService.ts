@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import * as request from 'request-promise';
 import { Report } from '../model/Report';
 import { ReportContent } from '../model/report/ReportContent';
-import { ReportScope } from '../model/report/ReportScope';
+import { ReportViewScope } from '../model/report/ReportViewScope';
 
 class ReportService {
 
@@ -83,7 +83,7 @@ class ReportService {
 
   private async getElementsInScope(config, logger, report: Report): Promise<ReportContent> {
 
-    const reportScope = new ReportScope('elementsInScope', {
+    const reportScope = new ReportViewScope('elementsInScope', {
       elementTypes: ['EC2', 'WINSVR', 'SERVER'],
       endDate: this.getEndDate(report.endDate, config.period),
       startDate: this.getStartDate(report.endDate, config.period)
@@ -94,14 +94,14 @@ class ReportService {
 
   private async getGroupedCost(config, logger, report: Report, elementIds: string[]): Promise<ReportContent> {
 
-    const reportScope = new ReportScope('groupedCost', {
+    const reportScope = new ReportViewScope('groupedCost', {
       activeQuantityAgg: 'sum',
       categoriseBy: 'category',
       elementFilter: elementIds,
       endDate: this.getEndDate(report.endDate, config.period),
       groupBy: config.groupby,
       groupKey: 'attribute=' + config.groupbykey,
-      instanceTypeKey: 'instanceType',
+      instanceTypeKey: 'instanceType', // for RDS this is dbInstanceClass
       service: 'EC2',
       startDate: this.getStartDate(report.endDate, config.period)
     },
