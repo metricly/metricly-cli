@@ -15,7 +15,7 @@ class ElementCommands {
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
       .option('--profile', 'Metricly profile', /.*/, 'default')
-      .option('--format', 'output format: text, json', ['table', 'csv', 'json'], 'table')
+      .option('--format', 'output format: table, csv, json', ['table', 'csv', 'json'], 'table')
       .option('--name', 'Name contains')
       .option('--type', 'Element type')
       .option('--attribute', 'Element attribute KEY=VALUE')
