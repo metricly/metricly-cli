@@ -8,6 +8,8 @@ const MAINT_TAG_NAME = 'n.state.maintenance';
 const MAINT_END_TAG_NAME = 'n.state.maintenance_end';
 const MS_IN_HOUR = 3600000;
 
+export type Tuple = [string, string];
+
 class ElementService {
 
   public async lsMaintenanceMode(config, logger): Promise<void> {
@@ -15,7 +17,7 @@ class ElementService {
     try {
       const requestBody = this.buildBaseElementQuery(config);
       const elementTags = 'elementTags';
-      requestBody.body[elementTags] = this.buildKeyValueQueryTerm(MAINT_TAG_NAME, 'true');
+      requestBody.body[elementTags] = this.buildKeyValueQueryTerm([[MAINT_TAG_NAME, 'true']]);
 
       logger.debug(JSON.stringify(requestBody, null, 2));
 
@@ -217,19 +219,17 @@ class ElementService {
     }
     // add attributes term
     if (attribute) {
-      const attrKey = attribute.split('=')[0];
-      const attrVal = attribute.split('=')[1];
-
       const field = 'attributes';
-      requestBody.body[field] = this.buildKeyValueQueryTerm(attrKey, attrVal);
+      requestBody.body[field] = this.buildKeyValueQueryTerm(attribute.split(',').map((pair) => {
+        return pair.split('=');
+      }));
     }
     // add elementTags term
     if (tag) {
-      const tagKey = tag.split('=')[0];
-      const tagVal = tag.split('=')[1];
-
       const field = 'elementTags';
-      requestBody.body[field] = this.buildKeyValueQueryTerm(tagKey, tagVal);
+      requestBody.body[field] = this.buildKeyValueQueryTerm(tag.split(',').map((pair) => {
+        return pair.split('=');
+      }));
     }
     // add collectors term
     if (collector) {
@@ -285,15 +285,17 @@ class ElementService {
     };
   }
 
-  public buildKeyValueQueryTerm(queryKey: string, queryVal: string) {
+  public buildKeyValueQueryTerm(keyValuePairs: Tuple[]) {
     return {
       and: true,
-      items: [{
-        contains: true,
-        key: queryKey,
-        literal: true,
-        value: queryVal
-      }]
+      items: keyValuePairs.map((tuple) => {
+        return {
+          contains: true,
+          key: tuple[0],
+          literal: true,
+          value: tuple[1]
+        };
+      })
     };
   }
 
