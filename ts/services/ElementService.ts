@@ -4,7 +4,6 @@ import * as moment from 'moment';
 import * as request from 'request-promise';
 import * as Table from 'tty-table';
 
-
 const MAINT_TAG_NAME = 'n.state.maintenance';
 const MAINT_END_TAG_NAME = 'n.state.maintenance_end';
 const MS_IN_HOUR = 3600000;
@@ -303,7 +302,7 @@ class ElementService {
   public async customtypeImageRm(imageName, config, logger): Promise<void> {
     logger.info('\nDelete a custom image ' + imageName);
     try {
-      let response = await this.deleteCustomImage(config, logger, imageName);
+      const response = await this.deleteCustomImage(config, logger, imageName);
       if (config.format === 'text') {
         logger.info(response);
       }

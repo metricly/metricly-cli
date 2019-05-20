@@ -63,7 +63,7 @@ class ElementCommands {
         const config = configService.mergeConfig(options);
         elementService.stopMaintenanceMode(args.id, config, logger);
       });
-    
+
     (caporal as any)
       .command('element customtype image rm', 'Delete a custom image')
       .option('--username', 'Metricly Username')
@@ -103,5 +103,3 @@ class ElementCommands {
 }
 
 export default ElementCommands;
-
-
