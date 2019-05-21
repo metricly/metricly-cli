@@ -5,7 +5,7 @@ import EncryptionUtil from '../util/EncryptionUtil';
 class ConfigService {
 
   public getConfig() {
-    const location = process.env.HOME + '/.metricly-cli.json';
+    const location = this.getLocation();
     return fs.existsSync(location) ? JSON.parse((fs.readFileSync(location).toString())) : {};
   }
 
@@ -18,8 +18,11 @@ class ConfigService {
   }
 
   public saveConfig(config) {
-    const location = process.env.HOME + '/.metricly-cli.json';
-    fs.writeFileSync(location, JSON.stringify(config, null, 2));
+    fs.writeFileSync(this.getLocation(), JSON.stringify(config, null, 2));
+  }
+
+  private getLocation(): string {
+    return (process.env.HOME || (process.env.HOMEDRIVE + process.env.HOMEPATH)) + '/.metricly-cli.json';
   }
 }
 
