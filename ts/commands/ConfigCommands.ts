@@ -1,5 +1,4 @@
 import * as caporal from 'caporal';
-import * as fs from 'fs';
 import * as inquirer from 'inquirer';
 
 import ConfigService from '../services/ConfigService';

@@ -1,5 +1,3 @@
-import * as Bluebird from 'bluebird';
-import * as fs from 'fs';
 import * as moment from 'moment';
 import * as request from 'request-promise';
 import * as Table from 'tty-table';
