@@ -12,7 +12,7 @@ class ConfigCommands {
   public static addCommands() {
     (caporal as any)
       .command('config', 'Set local defaults')
-      .option('--profile', 'Metricly profile', /.*/, 'default')
+      .option('--profile <profile>', 'Metricly profile', /.*/, 'default')
       .action((args, options, logger) => {
         const profileConfig = configService.getConfig()[options.profile] || {};
         inquirer.prompt([{
@@ -30,7 +30,7 @@ class ConfigCommands {
           message: 'Metricly Endpoint',
           name: 'endpoint',
           type: 'input'
-        }]).then((answers) => {
+        }]).then((answers: inquirer.Answers) => {
           const config = configService.getConfig();
           answers.password = EncryptionUtil.encrypt(answers.password);
           config[options.profile] = answers;

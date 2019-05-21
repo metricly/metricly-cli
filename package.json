@@ -19,7 +19,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "archiver": "^2.1.1",
-    "caporal": "^0.9.0",
+    "caporal": "^1.2.0",
     "chalk": "^2.3.0",
     "clean-deep": "^3.0.2",
     "extend": "^3.0.1",

@@ -11,10 +11,10 @@ class DashboardCommands {
   public static addCommands() {
     (caporal as any)
       .command('dashboard list', 'List all dashboards')
-      .option('--username', 'Metricly Username')
-      .option('--password', 'Metricly Password')
-      .option('--profile', 'Metricly profile', /.*/, 'default')
-      .option('--format', 'output format: text, json', ['text', 'json'], 'text')
+      .option('--username <username>', 'Metricly Username')
+      .option('--password <password>', 'Metricly Password')
+      .option('--profile <profile>', 'Metricly profile', /.*/, 'default')
+      .option('--format <format>', 'output format: text, json', ['text', 'json'], 'text')
       .action((args, options, logger) => {
         const config = configService.mergeConfig(options);
         dashboardService.list(config, logger);
@@ -22,10 +22,10 @@ class DashboardCommands {
 
     (caporal as any)
       .command('dashboard get', 'Get a dashboard by ID')
-      .option('--username', 'Metricly Username')
-      .option('--password', 'Metricly Password')
-      .option('--profile', 'Metricly profile', /.*/, 'default')
-      .option('--format', 'output format: text, json', ['text', 'json'], 'text')
+      .option('--username <username>', 'Metricly Username')
+      .option('--password <password>', 'Metricly Password')
+      .option('--profile <profile>', 'Metricly profile', /.*/, 'default')
+      .option('--format <format>', 'output format: text, json', ['text', 'json'], 'text')
       .argument('<id>', 'Dashboard ID')
       .action((args, options, logger) => {
         const config = configService.mergeConfig(options);
@@ -34,9 +34,9 @@ class DashboardCommands {
 
     (caporal as any)
       .command('dashboard create', 'Create a new dashboard from a local JSON file')
-      .option('--username', 'Metricly Username')
-      .option('--password', 'Metricly Password')
-      .option('--profile', 'Metricly profile', /.*/, 'default')
+      .option('--username <username>', 'Metricly Username')
+      .option('--password <password>', 'Metricly Password')
+      .option('--profile <profile>', 'Metricly profile', /.*/, 'default')
       .argument('<file>', 'JSON dashboard file location')
       .action((args, options, logger) => {
         const config = configService.mergeConfig(options);
@@ -45,9 +45,9 @@ class DashboardCommands {
 
     (caporal as any)
       .command('dashboard update', 'Update a dashboard from a local JSON file')
-      .option('--username', 'Metricly Username')
-      .option('--password', 'Metricly Password')
-      .option('--profile', 'Metricly profile', /.*/, 'default')
+      .option('--username <username>', 'Metricly Username')
+      .option('--password <password>', 'Metricly Password')
+      .option('--profile <profile>', 'Metricly profile', /.*/, 'default')
       .argument('<id>', 'Dashboard ID')
       .argument('<file>', 'JSON dashboard file location')
       .action((args, options, logger) => {
@@ -57,9 +57,9 @@ class DashboardCommands {
 
     (caporal as any)
       .command('dashboard delete', 'Delete a dashboard by ID')
-      .option('--username', 'Metricly Username')
-      .option('--password', 'Metricly Password')
-      .option('--profile', 'Metricly profile', /.*/, 'default')
+      .option('--username <username>', 'Metricly Username')
+      .option('--password <password>', 'Metricly Password')
+      .option('--profile <profile>', 'Metricly profile', /.*/, 'default')
       .argument('<id>', 'Dashboard ID')
       .action((args, options, logger) => {
         const config = configService.mergeConfig(options);
