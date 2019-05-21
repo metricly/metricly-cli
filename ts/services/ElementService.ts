@@ -316,10 +316,8 @@ class ElementService {
   }
 
   public async deleteCustomImage(config, logger, name) {
-
     const uriString = `${config.endpoint}/images/ELEMENT_TYPE/${name}`;
     logger.debug('Delete image with URI: ' + uriString);
-
     const response = await request({
       auth: {
         pass: config.password,
@@ -330,7 +328,6 @@ class ElementService {
       uri: uriString
     });
     return response;
-
   }
 
   public async customtypeImageSet(imageName, file: string, config, logger): Promise<void> {

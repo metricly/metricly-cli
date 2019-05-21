@@ -65,7 +65,7 @@ class ElementCommands {
       });
 
     (caporal as any)
-      .command('element customtype image rm', 'Delete a custom image')
+      .command('image custom delete', 'Delete a custom image')
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
       .option('--profile', 'Metricly profile', /.*/, 'default')
@@ -77,7 +77,7 @@ class ElementCommands {
       });
 
     (caporal as any)
-      .command('element customtype image set', 'Set images for custom element types')
+      .command('image custom set', 'Set images for custom element types')
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
       .option('--profile', 'Metricly profile', /.*/, 'default')
@@ -90,7 +90,7 @@ class ElementCommands {
       });
 
     (caporal as any)
-      .command('element customtype image list', 'List images for custom element types')
+      .command('image custom list', 'List images for custom element types')
       .option('--username', 'Metricly Username')
       .option('--password', 'Metricly Password')
       .option('--profile', 'Metricly profile', /.*/, 'default')
