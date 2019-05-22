@@ -7,6 +7,7 @@ import * as updateNotifier from 'update-notifier';
 import ConfigCommands from '../commands/ConfigCommands';
 import DashboardCommands from '../commands/DashboardCommands';
 import ElementCommands from '../commands/ElementCommands';
+import ImageCommands from '../commands/ImageCommands';
 import PackageCommands from '../commands/PackageCommands';
 import PolicyCommands from '../commands/PolicyCommands';
 import ReportCommands from '../commands/ReportCommands';
@@ -39,6 +40,7 @@ PolicyCommands.addCommands();
 DashboardCommands.addCommands();
 ReportCommands.addCommands();
 ElementCommands.addCommands();
+ImageCommands.addCommands();
 SampleCommands.addCommands();
 
 (caporal as any).parse(process.argv);

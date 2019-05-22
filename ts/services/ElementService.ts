@@ -298,7 +298,6 @@ class ElementService {
       })
     };
   }
-
 }
 
 export default ElementService;
