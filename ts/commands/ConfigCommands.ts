@@ -19,15 +19,7 @@ class ConfigCommands {
       .action((args, options, logger) => {
         const profileConfig = configService.getConfig()[options.profile] || {};
 
-        if(options.username == null) {
-            var prompts = 'true'
-        }
-
-        if(options.password == null) {
-            var prompts = 'true'
-        }
-
-        if(prompts) {
+        if (!options.username || !options.password) {
             inquirer.prompt([{
               default: profileConfig.username,
               message: 'Metricly Username',
@@ -53,15 +45,15 @@ class ConfigCommands {
           const config = configService.getConfig();
           options.password = EncryptionUtil.encrypt(options.password);
 
-          if(options.url == null) {
-            options.url = 'https://app.metricly.com'
+          if (options.url == null) {
+            options.url = 'https://app.metricly.com';
           }
 
           const answers = {
-            username: options.username,
+            endpoint: options.url,
             password: options.password,
-            endpoint: options.url
-          }
+            username: options.username
+          };
 
           config[options.profile] = answers;
           configService.saveConfig(config);
