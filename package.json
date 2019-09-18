@@ -7,6 +7,7 @@
   "scripts": {
     "compile": "tsc -p tsconfig.json",
     "lint": "tslint -p tslint.json",
+    "fix": "tslint --fix -p tslint.json",
     "test": "yarn run lint && nyc mocha",
     "prepublish": "yarn run compile && yarn run lint",
     "package": "yarn run compile && pkg .",
