@@ -27,27 +27,30 @@ class ConfigCommands {
             var prompts = 'true'
         }
 
-        inquirer.prompt([{
-          default: profileConfig.username,
-          message: 'Metricly Username',
-          name: 'username',
-          type: 'input'
-        }, {
-          default: profileConfig.password,
-          message: 'Metricly Password',
-          name: 'password',
-          type: 'password'
-        }, {
-          default: profileConfig.endpoint || 'https://app.metricly.com',
-          message: 'Metricly Endpoint',
-          name: 'endpoint',
-          type: 'input'
-        }]).then((answers) => {
-          const config = configService.getConfig();
-          answers.password = EncryptionUtil.encrypt(answers.password);
-          config[options.profile] = answers;
-          configService.saveConfig(config);
-        });
+        if(prompts) {
+            inquirer.prompt([{
+              default: profileConfig.username,
+              message: 'Metricly Username',
+              name: 'username',
+              type: 'input'
+            }, {
+              default: profileConfig.password,
+              message: 'Metricly Password',
+              name: 'password',
+              type: 'password'
+            }, {
+              default: profileConfig.endpoint || 'https://app.metricly.com',
+              message: 'Metricly Endpoint',
+              name: 'endpoint',
+              type: 'input'
+            }]).then((answers) => {
+              const config = configService.getConfig();
+              answers.password = EncryptionUtil.encrypt(answers.password);
+              config[options.profile] = answers;
+              configService.saveConfig(config);
+            });
+        }
+
       });
   }
 
