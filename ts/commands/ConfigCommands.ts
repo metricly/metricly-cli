@@ -49,6 +49,22 @@ class ConfigCommands {
               config[options.profile] = answers;
               configService.saveConfig(config);
             });
+        } else {
+          const config = configService.getConfig();
+          options.password = EncryptionUtil.encrypt(options.password);
+
+          if(options.url == null) {
+            options.url = 'https://app.metricly.com'
+          }
+
+          const answers = {
+            username: options.username,
+            password: options.password,
+            endpoint: options.url
+          }
+
+          config[options.profile] = answers;
+          configService.saveConfig(config);
         }
 
       });
