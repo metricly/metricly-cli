@@ -13,29 +13,52 @@ class ConfigCommands {
     (caporal as any)
       .command('config', 'Set local defaults')
       .option('--profile', 'Metricly profile', /.*/, 'default')
+      .option('--username', 'Metricly Username')
+      .option('--password', 'Metricly Password')
+      .option('--url', 'Metricly URL')
       .action((args, options, logger) => {
         const profileConfig = configService.getConfig()[options.profile] || {};
-        inquirer.prompt([{
-          default: profileConfig.username,
-          message: 'Metricly Username',
-          name: 'username',
-          type: 'input'
-        }, {
-          default: profileConfig.password,
-          message: 'Metricly Password',
-          name: 'password',
-          type: 'password'
-        }, {
-          default: profileConfig.endpoint || 'https://app.metricly.com',
-          message: 'Metricly Endpoint',
-          name: 'endpoint',
-          type: 'input'
-        }]).then((answers) => {
+
+        if (!options.username || !options.password) {
+            inquirer.prompt([{
+              default: profileConfig.username,
+              message: 'Metricly Username',
+              name: 'username',
+              type: 'input'
+            }, {
+              default: profileConfig.password,
+              message: 'Metricly Password',
+              name: 'password',
+              type: 'password'
+            }, {
+              default: profileConfig.endpoint || 'https://app.metricly.com',
+              message: 'Metricly Endpoint',
+              name: 'endpoint',
+              type: 'input'
+            }]).then((answers) => {
+              const config = configService.getConfig();
+              answers.password = EncryptionUtil.encrypt(answers.password);
+              config[options.profile] = answers;
+              configService.saveConfig(config);
+            });
+        } else {
           const config = configService.getConfig();
-          answers.password = EncryptionUtil.encrypt(answers.password);
+          options.password = EncryptionUtil.encrypt(options.password);
+
+          if (options.url == null) {
+            options.url = 'https://app.metricly.com';
+          }
+
+          const answers = {
+            endpoint: options.url,
+            password: options.password,
+            username: options.username
+          };
+
           config[options.profile] = answers;
           configService.saveConfig(config);
-        });
+        }
+
       });
   }
 
