@@ -13,6 +13,9 @@ class ConfigCommands {
     (caporal as any)
       .command('config', 'Set local defaults')
       .option('--profile', 'Metricly profile', /.*/, 'default')
+      .option('--username', 'Metricly Username')
+      .option('--password', 'Metricly Password')
+      .option('--url', 'Metricly URL')
       .action((args, options, logger) => {
         const profileConfig = configService.getConfig()[options.profile] || {};
         inquirer.prompt([{
