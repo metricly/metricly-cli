@@ -18,6 +18,15 @@ class ConfigCommands {
       .option('--url', 'Metricly URL')
       .action((args, options, logger) => {
         const profileConfig = configService.getConfig()[options.profile] || {};
+
+        if(options.username == null) {
+            var prompts = 'true'
+        }
+
+        if(options.password == null) {
+            var prompts = 'true'
+        }
+
         inquirer.prompt([{
           default: profileConfig.username,
           message: 'Metricly Username',
