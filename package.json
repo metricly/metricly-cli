@@ -1,12 +1,13 @@
 {
   "name": "metricly-cli",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Metricly CLI",
   "main": "js/index.js",
   "types": "js/index.d.ts",
   "scripts": {
     "compile": "tsc -p tsconfig.json",
     "lint": "tslint -p tslint.json",
+    "fix": "tslint --fix -p tslint.json",
     "test": "yarn run lint && nyc mocha",
     "prepublish": "yarn run compile && yarn run lint",
     "package": "yarn run compile && pkg .",
