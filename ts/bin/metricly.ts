@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
 import * as caporal from 'caporal';
-import chalk from 'chalk';
+import * as chalk from 'chalk';
 import * as updateNotifier from 'update-notifier';
 
 import ConfigCommands from '../commands/ConfigCommands';
