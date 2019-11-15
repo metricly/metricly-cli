@@ -6,7 +6,7 @@
   "types": "js/index.d.ts",
   "scripts": {
     "compile": "tsc -p tsconfig.json",
-    "lint": "tslint -p tslint.json",
+    "lint": "tslint -p tsconfig.json",
     "fix": "tslint --fix -p tslint.json",
     "test": "yarn run lint && nyc mocha",
     "prepublish": "yarn run compile && yarn run lint",
