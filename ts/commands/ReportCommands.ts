@@ -11,10 +11,10 @@ class ReportCommands {
   public static addCommands() {
     (caporal as any)
       .command('report list', 'List all reports')
-      .option('--username', 'Metricly Username')
-      .option('--password', 'Metricly Password')
-      .option('--profile', 'Metricly profile', /.*/, 'default')
-      .option('--format', 'format options: text, json', ['text', 'json'], 'text')
+      .option('--username <username>', 'Metricly Username')
+      .option('--password <password>', 'Metricly Password')
+      .option('--profile <profile>', 'Metricly profile', /.*/, 'default')
+      .option('--format <format>', 'format options: text, json', ['text', 'json'], 'text')
       .action((args, options, logger) => {
         const config = configService.mergeConfig(options);
         reportService.list(config, logger);
@@ -22,14 +22,14 @@ class ReportCommands {
 
     (caporal as any)
       .command('report ec2cost', 'Retrieve ec2 cost data grouped and aggregated.')
-      .option('--username', 'Metricly Username')
-      .option('--password', 'Metricly Password')
-      .option('--profile', 'Metricly profile', /.*/, 'default')
-      .option('--format', 'format options: text, json', ['text', 'json'], 'text')
-      .option('--period', 'relative period options: latestDay, monthToDate, lastMonth', ['latestDay', 'monthToDate', 'lastMonth'], 'latestDay')
-      .option('--groupby', 'groupby options: elementName, givenKey', ['elementName', 'givenKey'], 'elementName')
-      .option('--groupbykey', 'groupbykey options: instanceType, accountId, availabilityZone', ['instanceType', 'accountId', 'availabilityZone'], 'instanceType')
-      .option('--rowlimit', 'row limit: 20, 50, 100', /.*/, '20')
+      .option('--username <username>', 'Metricly Username')
+      .option('--password <password>', 'Metricly Password')
+      .option('--profile <profile>', 'Metricly profile', /.*/, 'default')
+      .option('--format <format>', 'format options: text, json', ['text', 'json'], 'text')
+      .option('--period <period>', 'relative period options: latestDay, monthToDate, lastMonth', ['latestDay', 'monthToDate', 'lastMonth'], 'latestDay')
+      .option('--groupby <groupby>', 'groupby options: elementName, givenKey', ['elementName', 'givenKey'], 'elementName')
+      .option('--groupbykey <groupbykey>', 'groupbykey options: instanceType, accountId, availabilityZone', ['instanceType', 'accountId', 'availabilityZone'], 'instanceType')
+      .option('--rowlimit <rowlimit>', 'row limit: 20, 50, 100', /.*/, '20')
       .action((args, options, logger) => {
         const config = configService.mergeConfig(options);
         reportService.ec2cost(config, logger);
