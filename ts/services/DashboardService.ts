@@ -1,4 +1,3 @@
-import * as Bluebird from 'bluebird';
 import * as fs from 'fs';
 import * as request from 'request-promise';
 

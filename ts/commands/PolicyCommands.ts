@@ -11,10 +11,10 @@ class PolicyCommands {
   public static addCommands() {
     (caporal as any)
       .command('policy list', 'List all policies')
-      .option('--username', 'Metricly Username')
-      .option('--password', 'Metricly Password')
-      .option('--profile', 'Metricly profile', /.*/, 'default')
-      .option('--format', 'output format: text, json', ['text', 'json'], 'text')
+      .option('--username <username>', 'Metricly Username')
+      .option('--password <password>', 'Metricly Password')
+      .option('--profile <profile>', 'Metricly profile', /.*/, 'default')
+      .option('--format <format>', 'output format: text, json', ['text', 'json'], 'text')
       .action((args, options, logger) => {
         const config = configService.mergeConfig(options);
         policyService.listAll(config, logger);
@@ -22,10 +22,10 @@ class PolicyCommands {
 
     (caporal as any)
       .command('policy get', 'Get a policy by ID')
-      .option('--username', 'Metricly Username')
-      .option('--password', 'Metricly Password')
-      .option('--profile', 'Metricly profile', /.*/, 'default')
-      .option('--format', 'output format: text, json', ['text', 'json'], 'text')
+      .option('--username <username>', 'Metricly Username')
+      .option('--password <password>', 'Metricly Password')
+      .option('--profile <profile>', 'Metricly profile', /.*/, 'default')
+      .option('--format <format>', 'output format: text, json', ['text', 'json'], 'text')
       .argument('<id>', 'Policy ID')
       .action((args, options, logger) => {
         const config = configService.mergeConfig(options);
@@ -34,9 +34,9 @@ class PolicyCommands {
 
     (caporal as any)
       .command('policy create', 'Create a new policy from a local JSON file')
-      .option('--username', 'Metricly Username')
-      .option('--password', 'Metricly Password')
-      .option('--profile', 'Metricly profile', /.*/, 'default')
+      .option('--username <username>', 'Metricly Username')
+      .option('--password <password>', 'Metricly Password')
+      .option('--profile <profile>', 'Metricly profile', /.*/, 'default')
       .argument('<file>', 'JSON policy file location')
       .action((args, options, logger) => {
         const config = configService.mergeConfig(options);
@@ -45,9 +45,9 @@ class PolicyCommands {
 
     (caporal as any)
       .command('policy update', 'Update a policy from a local JSON file')
-      .option('--username', 'Metricly Username')
-      .option('--password', 'Metricly Password')
-      .option('--profile', 'Metricly profile', /.*/, 'default')
+      .option('--username <username>', 'Metricly Username')
+      .option('--password <password>', 'Metricly Password')
+      .option('--profile <profile>', 'Metricly profile', /.*/, 'default')
       .argument('<id>', 'Policy ID')
       .argument('<file>', 'JSON policy file location')
       .action((args, options, logger) => {
@@ -57,9 +57,9 @@ class PolicyCommands {
 
     (caporal as any)
       .command('policy delete', 'Delete a policy by ID')
-      .option('--username', 'Metricly Username')
-      .option('--password', 'Metricly Password')
-      .option('--profile', 'Metricly profile', /.*/, 'default')
+      .option('--username <username>', 'Metricly Username')
+      .option('--password <password>', 'Metricly Password')
+      .option('--profile <profile>', 'Metricly profile', /.*/, 'default')
       .argument('<id>', 'Policy ID')
       .action((args, options, logger) => {
         const config = configService.mergeConfig(options);
