@@ -82,7 +82,7 @@ class ReportService {
   private async getElementsInScope(config, logger, report: Report): Promise<ReportContent> {
 
     const reportScope = new ReportViewScope('elementsInScope', {
-      elementTypes: ['EC2', 'WINSVR', 'SERVER'],
+      elementTypes: ['EC2', 'WINSRV', 'SERVER'],
       endDate: this.getEndDate(report.endDate, config.period),
       startDate: this.getStartDate(report.endDate, config.period)
     },
