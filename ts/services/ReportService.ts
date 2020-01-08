@@ -62,6 +62,30 @@ class ReportService {
     }
   }
 
+  public async ec2recommendation(config, logger): Promise<void> {
+    logger.debug('\nListing EC2RecommendationData');
+    try {
+      const reports = await this.getReports(config, logger);
+      // TODO
+      const EC2RecommendationReport = reports.filter( (report) => report.type === 'EC2Cost' );
+      if (EC2RecommendationReport) {
+        const report = Array.isArray(EC2RecommendationReport) ? EC2RecommendationReport[0] : EC2RecommendationReport;
+        if (report) {
+          const elementsInScope = await this.getElementsInScope(config, logger, report);
+          if (elementsInScope.content) {
+            const elementFilter = elementsInScope.content.map( (x) => x.element_id );
+            const Recommendation = await this.getRecommendation(config, logger, report, elementFilter);
+            if (config.format === 'text') {
+              logger.info(Recommendation);
+            }
+          }
+        }
+      }
+    } catch (e) {
+      logger.error('There was an error getting EC2 Recommendation Report data: ' + e);
+    }
+  }
+
   private async getReports(config, logger): Promise<Report[]> {
     try {
       const response = await request({
@@ -78,6 +102,7 @@ class ReportService {
       return [];
     }
   }
+
 
   private async getElementsInScope(config, logger, report: Report): Promise<ReportContent> {
 
@@ -107,7 +132,41 @@ class ReportService {
     return this.doReportContentPost(config, logger, reportScope, report);
   }
 
+  private async getRecommendation(config, logger, report: Report, elementIds: string[]): Promise<ReportContent> {
+
+    const reportScope = new ReportViewScope('recommendedType', {
+      //activeQuantityAgg: 'sum',
+      //categoriseBy: 'element_name',
+      elementFilter: elementIds,
+      //endDate: this.getEndDate(report.endDate, config.period),
+      //groupBy: config.groupby,
+      //groupKey: 'attribute=' + config.groupbykey,
+      instanceTypeKey: 'instanceType', // for RDS this is dbInstanceClass
+      service: 'EC2',
+      startDate: this.getStartDate(report.endDate, config.period)
+    },
+    config.rowlimit);
+    return this.doRecommendation(config, logger, reportScope, report);
+  }
+
   private async doReportContentPost(config, logger, bodyObject, report) {
+    try {
+      const response = await request.post({
+        auth: {
+          pass: config.password,
+          user: config.username
+        },
+        body: bodyObject,
+        json: true,
+        uri: config.endpoint + '/reports/content/' + report.id
+      });
+      return response;
+    } catch (e) {
+      logger.error('There was an error fetching the report content: ' + e);
+    }
+  }
+
+  private async doRecommendation(config, logger, bodyObject, report) {
     try {
       const response = await request.post({
         auth: {
