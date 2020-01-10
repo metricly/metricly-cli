@@ -34,7 +34,7 @@ class ReportCommands {
         const config = configService.mergeConfig(options);
         reportService.ec2cost(config, logger);
       });
-
+ 
     (caporal as any)
         .command('report ec2recommendation', 'Retrieve ec2 recommendation data grouped and aggregated.')
         .option('--username <username>', 'Metricly Username')

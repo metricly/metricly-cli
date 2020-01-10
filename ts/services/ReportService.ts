@@ -75,7 +75,7 @@ class ReportService {
           if (elementsInScope.content) {
             const elementFilter = elementsInScope.content.map( (x) => x.element_id );
             const Recommendation = await this.getRecommendation(config, logger, report, elementFilter);
-            if (config.format === 'text') {
+            if (config.format === 'text') { 
               logger.info(Recommendation);
             }
           }
