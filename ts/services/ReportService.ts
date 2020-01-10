@@ -105,7 +105,6 @@ class ReportService {
     }
   }
 
-
   private async getElementsInScope(config, logger, report: Report): Promise<ReportContent> {
 
     const reportScope = new ReportViewScope('elementsInScope', {
