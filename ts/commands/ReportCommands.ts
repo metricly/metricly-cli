@@ -36,7 +36,7 @@ class ReportCommands {
       });
 
     (caporal as any)
-        .command('report ec2recommendation', 'Retrieve ec2 recommendation data grouped and aggregated.')
+        .command('report ec2recommendation', 'Retrieve EC2 recommendation data grouped and aggregated.')
         .option('--username <username>', 'Metricly Username')
         .option('--password <password>', 'Metricly Password')
         .option('--profile <profile>', 'Metricly profile', /.*/, 'default')
