@@ -35,6 +35,18 @@ class ReportCommands {
         reportService.ec2cost(config, logger);
       });
 
+    (caporal as any)
+        .command('report ec2recommendation', 'Retrieve EC2 recommendation data grouped and aggregated.')
+        .option('--username <username>', 'Metricly Username')
+        .option('--password <password>', 'Metricly Password')
+        .option('--profile <profile>', 'Metricly profile', /.*/, 'default')
+        .option('--format <format>', 'format options: text, json', ['text', 'json'], 'text')
+        .option('--rowlimit <rowlimit>', 'row limit: 20, 50, 100', /.*/, '20')
+        .action((args, options, logger) => {
+          const config = configService.mergeConfig(options);
+          reportService.ec2recommendation(config, logger);
+        });
+
   }
 }
 
