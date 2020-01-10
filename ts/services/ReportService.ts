@@ -62,6 +62,32 @@ class ReportService {
     }
   }
 
+  public async ec2recommendation(config, logger): Promise<void> {
+    logger.debug('\nListing EC2RecommendationData');
+    try {
+      const reports = await this.getReports(config, logger);
+      const ec2RecommendationReport = reports.filter( (report) => report.type === 'EC2Cost' );
+      if (ec2RecommendationReport) {
+        const report = Array.isArray(ec2RecommendationReport) ? ec2RecommendationReport[0] : ec2RecommendationReport;
+        if (report) {
+          const elementsInScope = await this.getElementsInScope(config, logger, report);
+          if (elementsInScope.content) {
+            const elementFilter = elementsInScope.content.map( (x) => x.element_id );
+            const recommendation = await this.getRecommendation(config, logger, report, elementFilter);
+            if (config.format === 'text') {
+              logger.info(recommendation);
+            }
+            if (config.format === 'json') {
+              logger.info(JSON.stringify(recommendation, null, 2));
+            }
+          }
+        }
+      }
+    } catch (e) {
+      logger.error('There was an error getting EC2 Recommendation Report data: ' + e);
+    }
+  }
+
   private async getReports(config, logger): Promise<Report[]> {
     try {
       const response = await request({
@@ -82,7 +108,7 @@ class ReportService {
   private async getElementsInScope(config, logger, report: Report): Promise<ReportContent> {
 
     const reportScope = new ReportViewScope('elementsInScope', {
-      elementTypes: ['EC2', 'WINSVR', 'SERVER'],
+      elementTypes: ['EC2', 'WINSRV', 'SERVER'],
       endDate: this.getEndDate(report.endDate, config.period),
       startDate: this.getStartDate(report.endDate, config.period)
     },
@@ -107,7 +133,36 @@ class ReportService {
     return this.doReportContentPost(config, logger, reportScope, report);
   }
 
+  private async getRecommendation(config, logger, report: Report, elementIds: string[]): Promise<ReportContent> {
+
+    const reportScope = new ReportViewScope('recommendedType', {
+      elementFilter: elementIds,
+      instanceTypeKey: 'instanceType', // for RDS this is dbInstanceClass
+      service: 'EC2',
+      startDate: this.getStartDate(report.endDate, config.period)
+    },
+    config.rowlimit);
+    return this.doRecommendation(config, logger, reportScope, report);
+  }
+
   private async doReportContentPost(config, logger, bodyObject, report) {
+    try {
+      const response = await request.post({
+        auth: {
+          pass: config.password,
+          user: config.username
+        },
+        body: bodyObject,
+        json: true,
+        uri: config.endpoint + '/reports/content/' + report.id
+      });
+      return response;
+    } catch (e) {
+      logger.error('There was an error fetching the report content: ' + e);
+    }
+  }
+
+  private async doRecommendation(config, logger, bodyObject, report) {
     try {
       const response = await request.post({
         auth: {
