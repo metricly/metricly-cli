@@ -8,6 +8,7 @@ import ConfigCommands from '../commands/ConfigCommands';
 import DashboardCommands from '../commands/DashboardCommands';
 import ElementCommands from '../commands/ElementCommands';
 import ImageCommands from '../commands/ImageCommands';
+import NotificationCommands from '../commands/NotificationCommands';
 import PackageCommands from '../commands/PackageCommands';
 import PolicyCommands from '../commands/PolicyCommands';
 import ReportCommands from '../commands/ReportCommands';
@@ -41,6 +42,7 @@ DashboardCommands.addCommands();
 ReportCommands.addCommands();
 ElementCommands.addCommands();
 ImageCommands.addCommands();
+NotificationCommands.addCommands();
 SampleCommands.addCommands();
 
 (caporal as any).parse(process.argv);
