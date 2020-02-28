@@ -8,10 +8,10 @@ import ConfigCommands from '../commands/ConfigCommands';
 import DashboardCommands from '../commands/DashboardCommands';
 import ElementCommands from '../commands/ElementCommands';
 import ImageCommands from '../commands/ImageCommands';
+import NotificationCommands from '../commands/NotificationCommands';
 import PackageCommands from '../commands/PackageCommands';
 import PolicyCommands from '../commands/PolicyCommands';
 import ReportCommands from '../commands/ReportCommands';
-import NotificationCommands from '../commands/NotificationCommands';
 import SampleCommands from '../commands/SampleCommands';
 
 // tslint:disable-next-line:no-var-requires
