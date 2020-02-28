@@ -11,6 +11,7 @@ import ImageCommands from '../commands/ImageCommands';
 import PackageCommands from '../commands/PackageCommands';
 import PolicyCommands from '../commands/PolicyCommands';
 import ReportCommands from '../commands/ReportCommands';
+import NotificationCommands from '../commands/NotificationCommands';
 import SampleCommands from '../commands/SampleCommands';
 
 // tslint:disable-next-line:no-var-requires
@@ -41,6 +42,7 @@ DashboardCommands.addCommands();
 ReportCommands.addCommands();
 ElementCommands.addCommands();
 ImageCommands.addCommands();
+NotificationCommands.addCommands();
 SampleCommands.addCommands();
 
 (caporal as any).parse(process.argv);
