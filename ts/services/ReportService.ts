@@ -28,7 +28,7 @@ class ReportService {
   }
 
   public async ec2cost(config, logger): Promise<void> {
-    logger.debug('\nListing EC2CostData');
+          logger.debug('\nListing EC2CostData');
     try {
       const reports = await this.getReports(config, logger);
       // DailyAwsCost is where the viewDefinition 'groupedCost'
