@@ -43,6 +43,7 @@ class ReportService {
             const elementFilter = elementsInScope.content.map( (x) => x.element_id );
             const groupedCost = await this.getGroupedCost(config, logger, report, elementFilter);
             if (config.format === 'text') {
+              logger.info('\nThis report command is deprecated');
               logger.info(groupedCost.content.sort((rpt1, rpt2) => {
                 return rpt1.display_category.localeCompare(rpt2.display_category);
               }).map((rpt) => {
@@ -75,6 +76,7 @@ class ReportService {
             const elementFilter = elementsInScope.content.map( (x) => x.element_id );
             const recommendation = await this.getRecommendation(config, logger, report, elementFilter);
             if (config.format === 'text') {
+              logger.info('\nThis report command is deprecated');
               logger.info(recommendation);
             }
             if (config.format === 'json') {
