@@ -1,6 +1,6 @@
 {
   "name": "metricly-cli",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "description": "Metricly CLI",
   "main": "js/index.js",
   "types": "js/index.d.ts",
