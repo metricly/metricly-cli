@@ -2,9 +2,12 @@ import * as caporal from 'caporal';
 
 import ConfigService from '../services/ConfigService';
 import ReportService from '../services/ReportService';
+import NewReportsService from '../services/NewReportsService'
 
 const configService = new ConfigService();
 const reportService = new ReportService();
+const newreportsService = new NewReportsService();
+
 
 class ReportCommands {
 
@@ -46,6 +49,19 @@ class ReportCommands {
           const config = configService.mergeConfig(options);
           reportService.ec2recommendation(config, logger);
         });
+
+    (caporal as any)
+        .command('report ec2rightsizing', 'Retrieve EC2 Right Sizing report')
+        .option('--username <username>', 'Metricly Username')
+        .option('--password <password>', 'Metricly Password')
+        .option('--profile <profile>', 'Metricly profile', /.*/, 'default')
+        .option('--format <format>', 'format options: text, json', ['text', 'json'], 'text')
+        .option('--rowlimit <rowlimit>', 'row limit: 20, 50, 100', /.*/, '20')
+        .action((args, options, logger) => {
+          const config = configService.mergeConfig(options);
+          newreportsService.ec2rightsizing(config, logger);
+        });
+
 
   }
 }
