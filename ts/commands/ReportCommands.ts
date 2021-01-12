@@ -1,13 +1,12 @@
 import * as caporal from 'caporal';
 
 import ConfigService from '../services/ConfigService';
+import NewReportsService from '../services/NewReportsService';
 import ReportService from '../services/ReportService';
-import NewReportsService from '../services/NewReportsService'
 
 const configService = new ConfigService();
 const reportService = new ReportService();
 const newreportsService = new NewReportsService();
-
 
 class ReportCommands {
 
@@ -61,8 +60,6 @@ class ReportCommands {
           const config = configService.mergeConfig(options);
           newreportsService.ec2rightsizing(config, logger);
         });
-
-
   }
 }
 
