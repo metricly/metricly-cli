@@ -12,37 +12,15 @@ class NewReportsService {
           pass: config.password,
           user: config.username
         },
-        json: true,
-        method: 'POST',
-        uri: config.endpoint + '/capacity/analyze/AWS',
         body: {
           analysisType: 'RIGHT_SIZING',
-          endDate: moment().day(-1).format('YYYY-MM-DD'),
-          rollup: 'P7D',
-          startDate: moment().day(-7).format('YYYY-MM-DD'),
-          elementFilter: {
-            attributesExclude: [],
-            attributesInclude: [],
-            attributesMatchType: 'ANY',
-            idsExclude: [],
-            idsInclude: [],
-            nameRegexInclude: '',
-            nameRegexExclude: '',
-            tagsInclude: [],
-            tagsMatchType: 'ANY',
-            tagsExclude: [],
-          },
-          topNLimit: 0,
-          groupKey: '',
-          savingsPeriod: 'month',
-          perfStatistic: 'p95',
           constraints: [
             {
               defaultValue: 60,
               fixedFloor: 0,
+              maxUtil: 95,
               rule: 'dynamic',
-              type: 'memory',
-              maxUtil: 95
+              type: 'memory'
             },
             {
               fixedFloor: 0,
@@ -55,8 +33,30 @@ class NewReportsService {
               rule: 'none',
               type: 'diskio'
             }
-          ]
-        }
+          ],
+          elementFilter: {
+            attributesExclude: [],
+            attributesInclude: [],
+            attributesMatchType: 'ANY',
+            idsExclude: [],
+            idsInclude: [],
+            nameRegexExclude: '',
+            nameRegexInclude: '',
+            tagsExclude: [],
+            tagsInclude: [],
+            tagsMatchType: 'ANY',
+          },
+          endDate: moment().day(-1).format('YYYY-MM-DD'),
+          groupKey: '',
+          perfStatistic: 'p95',
+          rollup: 'P7D',
+          savingsPeriod: 'month',
+          startDate: moment().day(-7).format('YYYY-MM-DD'),
+          topNLimit: 0
+        },
+        json: true,
+        method: 'POST',
+        uri: config.endpoint + '/capacity/analyze/AWS'
       });
       if (config.format === 'json' || 'text') {
         logger.info(JSON.stringify(response, null, 2));
