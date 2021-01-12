@@ -44,7 +44,7 @@ class NewReportsService {
             nameRegexInclude: '',
             tagsExclude: [],
             tagsInclude: [],
-            tagsMatchType: 'ANY',
+            tagsMatchType: 'ANY'
           },
           endDate: moment().day(-1).format('YYYY-MM-DD'),
           groupKey: '',
