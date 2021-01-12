@@ -24,13 +24,13 @@ class NewReportsService {
             attributesExclude: [],
             attributesInclude: [],
             attributesMatchType: 'ANY',
-            idsInclude: [],
             idsExclude: [],
+            idsInclude: [],
+            nameRegexInclude: '',
+            nameRegexExclude: '',
             tagsInclude: [],
             tagsMatchType: 'ANY',
             tagsExclude: [],
-            nameRegexInclude: '',
-            nameRegexExclude: ''
           },
           topNLimit: 0,
           groupKey: '',
@@ -38,23 +38,22 @@ class NewReportsService {
           perfStatistic: 'p95',
           constraints: [
             {
-              rule: 'dynamic',
-              type: 'memory',
               defaultValue: 60,
               fixedFloor: 0,
-              maxUtil: 95
-            },
-            {
               rule: 'dynamic',
-              type: 'cpu',
-              fixedFloor: 0,
+              type: 'memory',
               maxUtil: 95
             },
             {
-              rule: 'none',
-              type: 'diskio',
               fixedFloor: 0,
-              requirePremiumIO: false
+              maxUtil: 95,
+              type: 'cpu'
+            },
+            {
+              fixedFloor: 0,
+              requirePremiumIO: false,
+              rule: 'none',
+              type: 'diskio'
             }
           ]
         }
