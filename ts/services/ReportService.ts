@@ -27,70 +27,7 @@ class ReportService {
     }
   }
 
-  public async ec2cost(config, logger): Promise<void> {
-    logger.debug('\nListing EC2CostData');
-    try {
-      const reports = await this.getReports(config, logger);
-      // DailyAwsCost is where the viewDefinition 'groupedCost'
-      // lives, this viewDef has cost details for single service
-      // grouped and aggregated
-      const dailyAwsCostReport = reports.filter( (report) => report.type === 'DailyAwsCost' );
-      if (dailyAwsCostReport) {
-        const report = Array.isArray(dailyAwsCostReport) ? dailyAwsCostReport[0] : dailyAwsCostReport;
-        if (report) {
-          const elementsInScope = await this.getElementsInScope(config, logger, report);
-          if (elementsInScope.content) {
-            const elementFilter = elementsInScope.content.map( (x) => x.element_id );
-            const groupedCost = await this.getGroupedCost(config, logger, report, elementFilter);
-            if (config.format === 'text') {
-              logger.info('\nThis report command is deprecated');
-              logger.info(groupedCost.content.sort((rpt1, rpt2) => {
-                return rpt1.display_category.localeCompare(rpt2.display_category);
-              }).map((rpt) => {
-                return `${rpt.display_category} (Cost: ${rpt.total_cost})`;
-              }));
-            }
-
-            // json
-            if (config.format === 'json') {
-              logger.info(JSON.stringify(groupedCost, null, 2));
-            }
-          }
-        }
-      }
-    } catch (e) {
-      logger.error('There was an error getting EC2 cost data: ' + e);
-    }
-  }
-
-  public async ec2recommendation(config, logger): Promise<void> {
-    logger.debug('\nListing EC2RecommendationData');
-    try {
-      const reports = await this.getReports(config, logger);
-      const ec2RecommendationReport = reports.filter( (report) => report.type === 'EC2Cost' );
-      if (ec2RecommendationReport) {
-        const report = Array.isArray(ec2RecommendationReport) ? ec2RecommendationReport[0] : ec2RecommendationReport;
-        if (report) {
-          const elementsInScope = await this.getElementsInScope(config, logger, report);
-          if (elementsInScope.content) {
-            const elementFilter = elementsInScope.content.map( (x) => x.element_id );
-            const recommendation = await this.getRecommendation(config, logger, report, elementFilter);
-            if (config.format === 'text') {
-              logger.info('\nThis report command is deprecated');
-              logger.info(recommendation);
-            }
-            if (config.format === 'json') {
-              logger.info(JSON.stringify(recommendation, null, 2));
-            }
-          }
-        }
-      }
-    } catch (e) {
-      logger.error('There was an error getting EC2 Recommendation Report data: ' + e);
-    }
-  }
-
-  private async getReports(config, logger): Promise<Report[]> {
+ private async getReports(config, logger): Promise<Report[]> {
     try {
       const response = await request({
         auth: {
